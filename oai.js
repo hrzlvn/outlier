@@ -275,7 +275,7 @@ var images = td.selectAll("a.image")
     .data(function(d) { return d.images});
   images.enter().append("img")
     .attr("src", function(d) { return d.src })
-    .attr("height", "40");
+    .attr("class", "img-responsive")
 };
 
 OaiPresenter.prototype.drawChart = function(container, hist, bins, labels) {
