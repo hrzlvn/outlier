@@ -423,6 +423,7 @@ define(["../d3/d3"], function(d3) {
     this.drawChart(this.weekdayContainer, hist, bins, labels);
   };
 
+  // TODO Turn the filters into a React component
   OaiPresenter.prototype.drawFilter = function(container, categoryDescription) {
     var _this = this;
     var toggles, group, panelCollapse, category, link;
@@ -453,7 +454,7 @@ define(["../d3/d3"], function(d3) {
       .append("div")
         .attr("class", "panel-collapse collapse")
         .attr("id", function(d) { return "collapse-" + d.catName; });
-    var buttonGroupClass = (categoryDescription.filters.length > 3) ? 'btn-group-vertical' : 'btn-group';
+    var buttonGroupClass = 'btn-group';
     group = panelCollapse.selectAll("div." + buttonGroupClass).data(function(d) { return [d.filters] });
     group.enter().append("div")
       .attr("class", buttonGroupClass + " btn-group-xs");
