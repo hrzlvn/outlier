@@ -70,7 +70,7 @@ define(["react/react"], function(React) {
 
     componentDidMount: function() {
       this.drawFilter(d3.select("#clothes-filter"), {category: "Clothes", catName: "clothes", filters: this.props.model.clothes});
-      this.drawFilter(d3.select("#accessory-filter"), {category: "Accessories", catName: "accessories", filters: this.props.model.accessories});
+      this.drawFilter(d3.select("#accessory-filter"), {category: "Objects", catName: "accessories", filters: this.props.model.accessories});
       this.drawFilter(d3.select("#fabric-filter"), {category: "Fabric", catName: "fabric", filters: this.props.model.fabrics});
       this.drawFilter(d3.select("#mwu-filter"), {category: "Men/Woman/Unisex", catName: "mwu", filters: this.props.model.mwu});
       this.drawFilter(d3.select("#reup-filter"), {category: "Re-up?", catName: "reup", filters: this.props.model.reup});
