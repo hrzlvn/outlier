@@ -2,6 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Outlier Clothsography</title>
 		<!-- #tminclude "~/Sites/illposed-support/includes/analytics.html" -->
 <!-- Start Open Web Analytics Tracker -->
@@ -34,7 +36,7 @@
     <link href="fonts/league/webfonts.css" rel="stylesheet">
     <link href="fonts/SourceSansPro/webfonts.css" rel="stylesheet">
     <!-- Styles -->
-    <link href="css/bootstrap/bootstrap.css" rel="stylesheet">
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="oai.css" rel="stylesheet">
     <style type="text/css">
       footer p {
@@ -45,19 +47,29 @@
 
   <body>
 
-    <div id="navbar" class="navbar navbar-default navbar-static-top" role="navigation">
-        <div class="container">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="#">O C</a>
-          </div>
-          <div class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-              <li class="active"><a href="#">Home</a></li>
-              <li><a href="about.html">About</a></li>
-            </ul>
-          </div>
+    <!-- Navbar -->
+    <nav class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <span class="navbar-brand">O C</span>
         </div>
-    </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav navbar-left">
+            <li class="active"><a href="#">Filters</a></li>
+            <li class="active"><a href="#">Stats</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="about.html">About</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
     <div class="container">
       <div class="row">
         <div class="col-xs-12 col-md-12">
@@ -75,14 +87,8 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-xs-8 col-md-8">
-          <h3>Products</h3>
-          <div style="height: 400px; overflow: scroll;">
-            <table id="products-table" class="table"></table>
-          </div>
-        </div>
-        <div class="col-xs-4 col-md-4">
-          <h3>Summary</h3>
+        <div class="col-xs-12 col-md-12">
+          <h3>Stats</h3>
           <div class="row">
             <div class="col-xs-4 col-md-4" style="width: 110px">
               <h4>Price</h4>
@@ -98,20 +104,12 @@
               <span id="weekday-container"></span>
             </div>
           </div>
-          <div class="row" style="padding: 10px 0px 0px 0px;">
-            <div class="col-xs-12 col-md-12">
-              <h5>Guide</h5>
-                <div id="guide-text">
-                  <p>The clothsography shows most Outlier releases made in the period from April 2011 to <span id="endmonth">February</span> <span id="endyear">2015</span>, and some earlier as well.</p>
-                  <p>
-                    To focus on certain kinds of items, turn on one or more of the filters from the far left. For example, to see just shirts for women, expand <strong>Clothes</strong> and select <strong>Shirts</strong> then expand <strong>Men/Women/Unisex</strong> and select <strong>Women</strong>.
-                  </p>
-                  <p>
-                    The data on release dates is from <a href="http://milled.com/outlier">Milled/Outlier</a> and <a href="https://twitter.com/outlier">twitter</a>; price data is mostly from the Outlier web site; any mistakes are mine alone. If you spot something, let <a href="https://twitter.com/ciyer">me know</a>.
-                  </p>
-                </div>
-            </div>
-          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-md-12">
+          <h3>Products</h3>
+          <table id="products-table" class="table"></table>
         </div>
       </div>
 
@@ -120,8 +118,8 @@
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="js/bootstrap/jquery.js"></script>
-    <script src="js/bootstrap/bootstrap.js"></script>
+    <script src="js/jquery/jquery.min.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
     <script data-main="js/main" src="js/require.js"></script>
   </body>
 </html>
