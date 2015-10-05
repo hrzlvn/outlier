@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-define(["../d3/d3"], function(d3) {
+define(["d3/d3", "react/react", "app/filters"], function(d3, React, filters) {
 
   var dateParser = d3.time.format("%Y-%m-%d");
   var dateFormatter = d3.time.format("%b %d %Y");
@@ -199,11 +199,11 @@ define(["../d3/d3"], function(d3) {
     this.priceMedianContainer = d3.select("#price-median-container");
     this.monthContainer = d3.select("#month-container");
     this.weekdayContainer = d3.select("#weekday-container");
-    this.clothesFilterContainer = d3.select("#clothes-filter");
-    this.accessoryFilterContainer = d3.select("#accessory-filter");
-    this.fabricFilterContainer = d3.select("#fabric-filter");
-    this.mwuFilterContainer = d3.select("#mwu-filter");
-    this.reupFilterContainer = d3.select("#reup-filter");
+    this.clothesFilterContainer = function() { return d3.select("#clothes-filter") };
+    this.accessoryFilterContainer = function() { return d3.select("#accessory-filter") };
+    this.fabricFilterContainer = function() { return d3.select("#fabric-filter") };
+    this.mwuFilterContainer = function() { return d3.select("#mwu-filter") };
+    this.reupFilterContainer = function() { return d3.select("#reup-filter") };
 
     this.endMonthContainer = d3.select("#endmonth");
     this.endYearContainer = d3.select("#endyear");
@@ -468,11 +468,11 @@ define(["../d3/d3"], function(d3) {
   }
 
   OaiPresenter.prototype.drawFilters = function() {
-    this.drawFilter(this.clothesFilterContainer, {category: "Clothes", catName: "clothes", filters: this.model.clothes});
-    this.drawFilter(this.accessoryFilterContainer, {category: "Accessories", catName: "accessories", filters: this.model.accessories});
-    this.drawFilter(this.fabricFilterContainer, {category: "Fabric", catName: "fabric", filters: this.model.fabrics});
-    this.drawFilter(this.mwuFilterContainer, {category: "Men/Woman/Unisex", catName: "mwu", filters: this.model.mwu});
-    this.drawFilter(this.reupFilterContainer, {category: "Re-up?", catName: "reup", filters: this.model.reup});
+    this.drawFilter(this.clothesFilterContainer(), {category: "Clothes", catName: "clothes", filters: this.model.clothes});
+    this.drawFilter(this.accessoryFilterContainer(), {category: "Accessories", catName: "accessories", filters: this.model.accessories});
+    this.drawFilter(this.fabricFilterContainer(), {category: "Fabric", catName: "fabric", filters: this.model.fabrics});
+    this.drawFilter(this.mwuFilterContainer(), {category: "Men/Woman/Unisex", catName: "mwu", filters: this.model.mwu});
+    this.drawFilter(this.reupFilterContainer(), {category: "Re-up?", catName: "reup", filters: this.model.reup});
   };
 
   OaiPresenter.prototype.updateEndDateInfo = function() {
@@ -509,6 +509,7 @@ define(["../d3/d3"], function(d3) {
 
 
   function enterApp() {
+    React.render(filters.filters(), $("#filter-container")[0]);
     model.loadData(function(rows) { presenter.initialDraw(); });
   }
 
