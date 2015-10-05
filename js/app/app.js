@@ -423,58 +423,6 @@ define(["d3/d3", "react/react", "app/filters"], function(d3, React, filters) {
     this.drawChart(this.weekdayContainer, hist, bins, labels);
   };
 
-  // TODO Turn the filters into a React component
-  OaiPresenter.prototype.drawFilter = function(container, categoryDescription) {
-    var _this = this;
-    var toggles, group, panelCollapse, category, link;
-
-    function onFiltersCount(d) {
-      return d.filters.map(function(f) { return f.isOn ?  1 : 0 }).reduce(function(sum, b) { return b + sum });
-    }
-
-    category = container.selectAll("h5.panel-title").data([categoryDescription]);
-    category.enter()
-      .append("h5")
-        .attr("class", "panel-title");
-    link = category.selectAll("a").data(function(d) { return [d] });
-    link.enter()
-      .append("a")
-        .attr("data-toggle", "collapse")
-        .attr("data-parent", "#filters")
-        .attr("href", function(d) { return "#collapse-" + d.catName; });
-    link.text(function(d) {
-      var count = onFiltersCount(d);
-      return (count > 0) ?
-        d.category + " (" + count + ")" :
-        d.category;
-    });
-
-    panelCollapse = container.selectAll("div.panel-collapse").data([categoryDescription]);
-    panelCollapse.enter()
-      .append("div")
-        .attr("class", "panel-collapse collapse")
-        .attr("id", function(d) { return "collapse-" + d.catName; });
-    var buttonGroupClass = 'btn-group';
-    group = panelCollapse.selectAll("div." + buttonGroupClass).data(function(d) { return [d.filters] });
-    group.enter().append("div")
-      .attr("class", buttonGroupClass + " btn-group-xs");
-    toggles = group.selectAll("button").data(unpack);
-    toggles.enter()
-      .append("button")
-      .attr("class", "btn btn-default")
-      .attr("data-toggle", "button")
-      .on("click", function(d) { _this.model.toggleFilter(d); _this.update(); })
-      .text(function(d) { return d.type; });
-  }
-
-  OaiPresenter.prototype.drawFilters = function() {
-    this.drawFilter(this.clothesFilterContainer(), {category: "Clothes", catName: "clothes", filters: this.model.clothes});
-    this.drawFilter(this.accessoryFilterContainer(), {category: "Accessories", catName: "accessories", filters: this.model.accessories});
-    this.drawFilter(this.fabricFilterContainer(), {category: "Fabric", catName: "fabric", filters: this.model.fabrics});
-    this.drawFilter(this.mwuFilterContainer(), {category: "Men/Woman/Unisex", catName: "mwu", filters: this.model.mwu});
-    this.drawFilter(this.reupFilterContainer(), {category: "Re-up?", catName: "reup", filters: this.model.reup});
-  };
-
   OaiPresenter.prototype.updateEndDateInfo = function() {
     var lastEntry = this.model.products[0]
     var lastEntryDate = lastEntry.releaseDate
@@ -487,7 +435,6 @@ define(["d3/d3", "react/react", "app/filters"], function(d3, React, filters) {
     this.drawPriceInfo();
     this.drawMonthInfo();
     this.drawWeekdayInfo();
-    this.drawFilters();
     this.updateEndDateInfo();
   }
 
@@ -499,6 +446,7 @@ define(["d3/d3", "react/react", "app/filters"], function(d3, React, filters) {
   }
 
   OaiPresenter.prototype.initialDraw = function() {
+    React.render(filters.filters({model: model, presenter: presenter}), $("#filter-container")[0]);
     this.update();
     var _this = this;
     $('#clear-button').on("click", function(e) { _this.clearFilters() });
@@ -509,7 +457,6 @@ define(["d3/d3", "react/react", "app/filters"], function(d3, React, filters) {
 
 
   function enterApp() {
-    React.render(filters.filters(), $("#filter-container")[0]);
     model.loadData(function(rows) { presenter.initialDraw(); });
   }
 
