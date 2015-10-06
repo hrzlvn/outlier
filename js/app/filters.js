@@ -69,15 +69,19 @@ define(["react/react"], function(React) {
     },
 
     componentDidMount: function() {
+      // Just update the component
+      this.componentDidUpdate();
+    },
+
+    componentDidUpdate: function() {
       this.drawFilter(d3.select("#clothes-filter"), {category: "Clothes", catName: "clothes", filters: this.props.model.clothes});
       this.drawFilter(d3.select("#accessory-filter"), {category: "Objects", catName: "accessories", filters: this.props.model.accessories});
       this.drawFilter(d3.select("#fabric-filter"), {category: "Fabric", catName: "fabric", filters: this.props.model.fabrics});
       this.drawFilter(d3.select("#mwu-filter"), {category: "Men/Woman/Unisex", catName: "mwu", filters: this.props.model.mwu});
-      this.drawFilter(d3.select("#reup-filter"), {category: "Re-up?", catName: "reup", filters: this.props.model.reup});
     },
 
     render: function() {
-      var filterIds = ["clothes-filter", "accessory-filter", "fabric-filter", "mwu-filter", "reup-filter"];
+      var filterIds = ["clothes-filter", "accessory-filter", "fabric-filter", "mwu-filter"];
       var filters = filterIds.map(function(d) { return React.DOM.div({id: d, className: 'panel'})} );
       var panelGroup = React.DOM.div({className:'panel-group', id:'filters'}, filters);
       var clearButton = React.DOM.button({
@@ -86,7 +90,7 @@ define(["react/react"], function(React) {
       var clearGroup = React.DOM.div({style: {paddingBottom: "10px"}}, clearButton);
 
       var title = React.DOM.h3(null, 'Filter');
-      var column = React.DOM.div({className: 'col-xs-12 col-md-12'}, [title, clearGroup, panelGroup]);
+      var column = React.DOM.div({className: 'col-xs-6 col-md-6'}, [title, clearGroup, panelGroup]);
       return column;
     }
   });
