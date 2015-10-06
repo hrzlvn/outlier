@@ -9,7 +9,7 @@
  /**
   * Implementation of the top-level logic for the archive.
   */
-define(["d3/d3", "react/react", "app/filters", "app/stats"], function(d3, React, filters, stats) {
+define(["d3/d3", "react/react", "app/dashboard"], function(d3, React, dashboard) {
 
   var dateParser = d3.time.format("%Y-%m-%d");
   var dateFormatter = d3.time.format("%b %d %Y");
@@ -272,10 +272,10 @@ define(["d3/d3", "react/react", "app/filters", "app/stats"], function(d3, React,
 
   OaiPresenter.prototype.update = function() {
     this.drawProductTable();
-    React.render(stats.stats({
+    React.render(dashboard.dashboard({
         model: model, presenter: presenter,
         chartMargin: this.chartMargin, chartWidth: this.chartWidth, chartHeight: this.chartHeight
-      }), $("#stats-container")[0]);
+      }), $("#dashboard-container")[0]);
     this.updateEndDateInfo();
   }
 
@@ -287,7 +287,6 @@ define(["d3/d3", "react/react", "app/filters", "app/stats"], function(d3, React,
   }
 
   OaiPresenter.prototype.initialDraw = function() {
-    React.render(filters.filters({model: model, presenter: presenter}), $("#filter-container")[0]);
     this.update();
     var _this = this;
     $('#clear-button').on("click", function(e) { _this.clearFilters() });
