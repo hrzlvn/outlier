@@ -19,8 +19,8 @@ define(["react/react", "app/filters", "app/stats"], function(React, filters, sta
   var DashboardClass = React.createClass({
 
     render: function() {
-      var column = React.DOM.div({className: 'row'}, [filters.filters(this.props), stats.stats(this.props)]);
-      return column;
+      var row = React.DOM.div({className: 'row'}, [filters.filters(this.props), stats.stats(this.props)]);
+      return row;
     }
   });
 

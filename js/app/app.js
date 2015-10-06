@@ -9,7 +9,7 @@
  /**
   * Implementation of the top-level logic for the archive.
   */
-define(["d3/d3", "react/react", "app/dashboard"], function(d3, React, dashboard) {
+define(["d3/d3", "react/react", "app/dashboard", "app/products"], function(d3, React, dashboard, products) {
 
   var dateParser = d3.time.format("%Y-%m-%d");
   var dateFormatter = d3.time.format("%b %d %Y");
@@ -186,8 +186,6 @@ define(["d3/d3", "react/react", "app/dashboard"], function(d3, React, dashboard)
     */
   function OaiPresenter(model) {
     this.model = model;
-    this.showImages = true;
-    this.productsTable = d3.select("#products-table");
     this.endMonthContainer = d3.select("#endmonth");
     this.endYearContainer = d3.select("#endyear");
 
@@ -202,67 +200,6 @@ define(["d3/d3", "react/react", "app/dashboard"], function(d3, React, dashboard)
    */
   function unpack(d) { return d;}
 
-  OaiPresenter.prototype.productTableHeaders = function() {
-    return (this.showImages) ? ["Image", "Product", "Price", "Release"] : ["Product", "Price", "Release"];
-  }
-
-  OaiPresenter.prototype.productTableColumns = function(row, headers) {
-    var showImages = this.showImages;
-    var imageColumnIdx = (showImages) ? 0 : -1;
-    var productColumnIdx = (showImages) ? 1 : 0;
-    return headers.map(function(d, i) {
-      var links = [];
-      var images = [];
-      if (i == productColumnIdx && row["InSitu"].length > 0)
-        links = [{label: row[d], link: row["InSitu"]}];
-      if (i == imageColumnIdx && row["Image"] && row["Image"].length > 0) {
-        link = null;
-        if (row["InSitu"].length > 0) link = row["InSitu"].length;
-        images = [{src: row["Image"], link: link }];
-      }
-      return {label: row[d], links: links, images: images}
-    })
-  }
-
-  function rowLabel(d) {
-    if (d.links.length > 0) return "";
-    if (d.images.length > 0) return "";
-    return d.label;
-  }
-
-  OaiPresenter.prototype.drawProductTable = function() {
-    var headers = this.productTableHeaders();
-    var thead = this.productsTable.selectAll("thead").data([[headers]]);
-    thead.enter().append("thead");
-    var headerRow = thead.selectAll("tr").data(unpack);
-    headerRow.enter().append("tr");
-    var headerData = headerRow.selectAll("th").data(unpack);
-    headerData.enter().append("th").text(unpack);
-
-    var tbody = this.productsTable.selectAll("tbody").data([this.model.filteredProducts]);
-    tbody.enter().append("tbody");
-    var tr = tbody.selectAll("tr").data(unpack);
-    tr.enter().append("tr");
-    tr.exit().transition(1000).style("opacity", 0).remove();
-    var _this = this;
-    var td = tr.selectAll("td").data(function(row) { return _this.productTableColumns(row, headers)});
-    td.enter().append("td");
-    td.text(rowLabel);
-
-    var links = td.selectAll("a.product")
-      .data(function(d) { return d.links});
-    links.enter().append("a")
-      .attr("class", "product")
-      .attr("href", function(d) { return d.link })
-      .text(function(d) { return d.label });
-
-  var images = td.selectAll("a.image")
-      .data(function(d) { return d.images});
-    images.enter().append("img")
-      .attr("src", function(d) { return d.src })
-      .attr("class", "img-responsive")
-  };
-
   OaiPresenter.prototype.updateEndDateInfo = function() {
     var lastEntry = this.model.products[0]
     var lastEntryDate = lastEntry.releaseDate
@@ -271,7 +208,9 @@ define(["d3/d3", "react/react", "app/dashboard"], function(d3, React, dashboard)
   };
 
   OaiPresenter.prototype.update = function() {
-    this.drawProductTable();
+    React.render(products.products({
+        model: model, presenter: presenter
+      }), $("#products-container")[0]);
     React.render(dashboard.dashboard({
         model: model, presenter: presenter,
         chartMargin: this.chartMargin, chartWidth: this.chartWidth, chartHeight: this.chartHeight
