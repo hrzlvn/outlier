@@ -91,8 +91,8 @@ define(["react/react"], function(React) {
       imageContainers
         .enter().append("a")
           .classed("image", true);
-      imageContainers
-        .attr("href", function(d) { return "#" }) // d.links })
+      imageContainers.attr("href", function(d) { return "#" }); // d.links });
+      if (this.isShowLabels()) imageContainers.text(function(d) { return d["Product"]})
       var images = imageContainers.selectAll("img").data(function(d) { return [d["Image"]]});
       images
           .enter()
@@ -103,6 +103,8 @@ define(["react/react"], function(React) {
     },
 
     isTableMode: function() { return this.props.mode == "table" },
+    isGridMode: function() { return this.props.mode == "grid" },
+    isShowLabels: function() { return this.props.showLabels },
 
     componentDidMount: function() {
       // Just update the component
@@ -113,7 +115,7 @@ define(["react/react"], function(React) {
       var products = this.props.model.filteredProducts;
       if (this.isTableMode()) {
         this.drawProductTable(d3.select("#products-table"), products);
-      } else {
+      } else { // this.isGridMode()
         this.drawProductList(d3.select("#products-list"), products);
       }
     },

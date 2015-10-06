@@ -213,7 +213,7 @@ define(["d3/d3", "react/react", "app/dashboard", "app/products"], function(d3, R
         chartMargin: this.chartMargin, chartWidth: this.chartWidth, chartHeight: this.chartHeight
       }), $("#dashboard-container")[0]);
     React.render(products.products({
-        model: model, presenter: presenter, mode: "list", showImages: true
+        model: model, presenter: presenter, mode: "list", showImages: true, showLabels: true
       }), $("#products-container")[0]);
     this.updateEndDateInfo();
   }
