@@ -208,13 +208,13 @@ define(["d3/d3", "react/react", "app/dashboard", "app/products"], function(d3, R
   };
 
   OaiPresenter.prototype.update = function() {
-    React.render(products.products({
-        model: model, presenter: presenter
-      }), $("#products-container")[0]);
     React.render(dashboard.dashboard({
         model: model, presenter: presenter,
         chartMargin: this.chartMargin, chartWidth: this.chartWidth, chartHeight: this.chartHeight
       }), $("#dashboard-container")[0]);
+    React.render(products.products({
+        model: model, presenter: presenter, mode: "list", showImages: true
+      }), $("#products-container")[0]);
     this.updateEndDateInfo();
   }
 

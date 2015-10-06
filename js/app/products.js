@@ -23,19 +23,12 @@ define(["react/react"], function(React) {
   }
 
   var ProductsClass = React.createClass({
-    getInitialState: function() {
-      return {
-        mode: "table",
-        showImages: true
-      };
-    },
-
     productTableHeaders: function() {
-      return (this.state.showImages) ? ["Image", "Product", "Price", "Release"] : ["Product", "Price", "Release"];
+      return (this.props.showImages) ? ["Image", "Product", "Price", "Release"] : ["Product", "Price", "Release"];
     },
 
     productTableColumns: function(row, headers) {
-      var showImages = this.state.showImages;
+      var showImages = this.props.showImages;
       var imageColumnIdx = (showImages) ? 0 : -1;
       var productColumnIdx = (showImages) ? 1 : 0;
       return headers.map(function(d, i) {
@@ -85,7 +78,28 @@ define(["react/react"], function(React) {
         .attr("class", "img-responsive")
     },
 
-    isTableMode: function() { return this.state.mode == "table" },
+    drawProductList: function(productsList, products) {
+      var list = productsList.selectAll("li").data(products);
+      list
+        .enter().append("li")
+          .classed("col-lg-2 col-md-2 col-sm-3 col-xs-4", true)
+          .style("list-style", "none")
+          .style("margin-bottom", "25px");
+      list.exit().transition(1000).style("opacity", 0).remove();
+      var imageContainers = list.selectAll("a.image")
+          .data(function(d) { console.log(d); return [d]})
+        .enter().append("a")
+          .classed("product", true);
+      imageContainers
+        .attr("href", function(d) { return "#" }) // d.links })
+      var images = imageContainers.selectAll("img").data(function(d) { return [d["Image"]]})
+          .enter()
+        .append("img")
+          .attr("src", function(d) { return d })
+          .classed("img-responsive", true);
+    },
+
+    isTableMode: function() { return this.props.mode == "table" },
 
     componentDidMount: function() {
       // Just update the component
@@ -94,13 +108,27 @@ define(["react/react"], function(React) {
 
     componentDidUpdate: function() {
       var products = this.props.model.filteredProducts;
-      this.drawProductTable(d3.select("#products-table"), products);
+      if (this.isTableMode()) {
+        this.drawProductTable(d3.select("#products-table"), products);
+      } else {
+        this.drawProductList(d3.select("#products-list"), products);
+      }
     },
 
     render: function() {
       var title = React.DOM.h3(null, "Products");
-      var table = React.DOM.table({id: 'products-table', className: 'table' });
-      var column = React.DOM.div({className: 'col-xs-12 col-md-12'}, [title, table]);
+      var elts = [title];
+      if (this.isTableMode()) {
+        var table = React.DOM.table({id: 'products-table', className: 'table' });
+        elts.push(table);
+      } else {
+        var list = React.DOM.ul({
+          id: 'products-list', className: 'row',
+          style: { padding: "0 0 0 0", margin: "0 0 0 0" }
+        });
+        elts.push(list);
+      }
+      var column = React.DOM.div({className: 'col-xs-12 col-md-12'}, elts);
       var row = React.DOM.div({className: 'row'}, [column]);
       return row;
     }
