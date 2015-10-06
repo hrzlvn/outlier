@@ -87,16 +87,19 @@ define(["react/react"], function(React) {
           .style("margin-bottom", "25px");
       list.exit().transition(1000).style("opacity", 0).remove();
       var imageContainers = list.selectAll("a.image")
-          .data(function(d) { console.log(d); return [d]})
+          .data(function(d) { return [d]});
+      imageContainers
         .enter().append("a")
-          .classed("product", true);
+          .classed("image", true);
       imageContainers
         .attr("href", function(d) { return "#" }) // d.links })
-      var images = imageContainers.selectAll("img").data(function(d) { return [d["Image"]]})
+      var images = imageContainers.selectAll("img").data(function(d) { return [d["Image"]]});
+      images
           .enter()
         .append("img")
-          .attr("src", function(d) { return d })
           .classed("img-responsive", true);
+      images
+        .attr("src", function(d) { return d });
     },
 
     isTableMode: function() { return this.props.mode == "table" },
