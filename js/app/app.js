@@ -9,7 +9,7 @@
  /**
   * Implementation of the top-level logic for the archive.
   */
-define(["d3", "react", "enquire", "app/dashboard", "app/products"], function(d3, React, enquire, dashboard, products) {
+define(["d3", "react", "enquire", "backbone", "app/dashboard", "app/products"], function(d3, React, enquire, Backbone, dashboard, products) {
 
   var dateParser = d3.time.format("%Y-%m-%d");
   var dateFormatter = d3.time.format("%b %d %Y");
@@ -181,6 +181,13 @@ define(["d3", "react", "enquire", "app/dashboard", "app/products"], function(d3,
     this.filteredProducts = this.products;
   };
 
+  OaiRouter = Backbone.Router.extend({
+    routes: {
+      "about":  "about",
+      "product/:product": "product"
+    }
+  });
+
    /**
     * @class
     */
@@ -188,6 +195,12 @@ define(["d3", "react", "enquire", "app/dashboard", "app/products"], function(d3,
     this.model = model;
     this.endMonthContainer = d3.select("#endmonth");
     this.endYearContainer = d3.select("#endyear");
+
+    var _this = this;
+    this.router = new OaiRouter();
+    this.router.presenter = this;
+    this.router.on("route:product", function(product) { _this.showProductPage(product) });
+    this.router.on("route:about", function() { _this.showAboutPage() });
 
     var margin = {top: 0, right: 0, bottom: 0, left: 0};
     this.chartMargin = margin;
@@ -218,6 +231,16 @@ define(["d3", "react", "enquire", "app/dashboard", "app/products"], function(d3,
     this.updateEndDateInfo();
   }
 
+  OaiPresenter.prototype.showProductPage = function(product) {
+    // Show the product details page
+    console.log(["showProductPage", product])
+  }
+
+  OaiPresenter.prototype.showAboutPage = function() {
+    // Show the about page
+    console.log(["showAboutPage"])
+  }
+
   OaiPresenter.prototype.clearFilters = function() {
     this.model.clearFilters();
     // Remove the active state from all buttons
@@ -231,8 +254,13 @@ define(["d3", "react", "enquire", "app/dashboard", "app/products"], function(d3,
     $('#clear-button').on("click", function(e) { _this.clearFilters() });
   };
 
+  OaiPresenter.prototype.clickedProduct = function(d) {
+    this.router.navigate(d, {trigger: true});
+  }
+
   var model = new OaiModel();
   var presenter = new OaiPresenter(model);
+  Backbone.history.start({root: "/outlier/"});
 
 
   function enterApp() {

@@ -91,7 +91,12 @@ define(["react"], function(React) {
       imageContainers
         .enter().append("a")
           .classed("image", true);
-      imageContainers.attr("href", function(d) { return "#" }); // d.links });
+      imageContainers
+        .attr("href", function(d) { return "#product/" + d["Product"].replace(/\//g, "%2F")})
+        .on("click", function(d) {
+          d3.event.preventDefault();
+          presenter.clickedProduct("product/" + d["Product"].replace(/\//g, "%2F"))
+        });
       if (this.isShowLabels()) imageContainers.text(function(d) { return d["Product"]})
       var images = imageContainers.selectAll("img").data(function(d) { return [d["Image"]]});
       images
