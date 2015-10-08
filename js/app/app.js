@@ -9,177 +9,8 @@
  /**
   * Implementation of the top-level logic for the archive.
   */
-define(["d3", "react", "react-dom", "enquire", "backbone", "app/dashboard", "app/products"], function(d3, React, ReactDOM, enquire, Backbone, dashboard, products) {
-
-  var dateParser = d3.time.format("%Y-%m-%d");
-  var dateFormatter = d3.time.format("%b %d %Y");
-  var monthFormatter = d3.time.format("%B")
-  var yearFormatter = d3.time.format("%Y")
-
-  /**
-   * @class
-   */
-  function OaiModel() {
-    this.products = [];
-    this.filteredProducts = [];
-    this.categories = [];
-    this.clothes = [];
-    this.accessories = [];
-    this.fabrics = [];
-    this.orFilters = [];
-    this.andFilters = [];
-    this.mwu = [];
-    this.reup = [];
-  }
-
-  function cleanCsvRow(d) {
-    var price = d["Price"];
-    if (price.length > 0) d["Price"] = +d["Price"];
-
-    var release = d["Release"];
-    if (release.length > 0) {
-      var releaseDate = dateParser.parse(d["Release"]);
-      d.releaseDate = releaseDate;
-      d["Release"] = dateFormatter(releaseDate);
-    } else {
-      d.releaseDate = null;
-    }
-
-    return d;
-  }
-
-  // Load the data then invoke the callback
-  OaiModel.prototype.loadData = function(callback) {
-    var _this = this;
-    d3.csv("outlier-data.csv")
-      .row(cleanCsvRow)
-      .get(function(err, rows) {
-        if (err) {
-          console.log(err);
-          return;
-        }
-        _this.initializeProducts(rows);
-        callback(rows);
-      })
-  }
-
-  OaiModel.prototype.initializeProducts = function(rows) {
-    this.products = rows;
-    this.filteredProducts = this.products;
-    this.orFilters = [];
-    this.andFilters = [];
-
-    var fabricsMap = {}, typeCategoriesMap = {}, mwuMap = {}, reupMap = {};
-    this.products.forEach(function(d) {
-      var cat = typeCategoriesMap[d["Category"]];
-      if (!cat) { cat = {}; typeCategoriesMap[d["Category"]] = cat; }
-      cat[d["Type"]] = true;
-      fabricsMap[d["Fabric"]] = true;
-      mwuMap[d["MWU"]] = true;
-      reupMap[d["Re-up"]] = true;
-    });
-
-    var categories = {};
-    for (cat in typeCategoriesMap) {
-      var filters, types = [];
-      this.initializeFilterCodes(types, typeCategoriesMap[cat]);
-      filters = types.map(function(type) {
-        return {
-          isOn: false,
-          category: cat,
-          type: type,
-          isHit: function(d) { return type == d["Type"] }
-        }
-      });
-      categories[cat] = filters;
-      this.orFilters = this.orFilters.concat(filters);
-    }
-    this.clothes = categories["Clothes"];
-    this.accessories = categories["Accessory"];
-
-    var fabrics = [];
-    this.initializeFilterCodes(fabrics, fabricsMap);
-    this.fabrics = fabrics.map(function(fabric) {
-      return {
-        isOn: false,
-        category: "Fabric",
-        type: fabric,
-        isHit: function(d) { return fabric == d["Fabric"] }
-      }
-    });
-    this.andFilters = this.andFilters.concat(this.fabrics);
-
-    var mwu = [];
-    this.initializeFilterCodes(mwu, mwuMap);
-    this.mwu = mwu.map(function(option) {
-      return {
-        isOn: false,
-        category: "Male/Female/Unisex",
-        type: option,
-        isHit: function(d) { return option == d["MWU"] }
-      }
-    });
-    this.andFilters = this.andFilters.concat(this.mwu);
-
-    var reup = [];
-    this.initializeFilterCodes(reup, reupMap);
-    this.reup = reup.map(function(option) {
-      var type = option;
-      if (option == "TRUE") type = 'Yes';
-      if (option == "FALSE") type = 'No';
-      return {
-        isOn: false,
-        category: "Re-Up?",
-        catName: "reup",
-        type: type,
-        isHit: function(d) { return option == d["Re-up"] }
-      }
-    });
-    this.andFilters = this.andFilters.concat(this.reup);
-  };
-
-  OaiModel.prototype.initializeFilterCodes = function(coll, map) {
-    for (key in map) {
-      coll.push(key);
-    }
-    coll.sort(d3.ascending);
-  };
-
-  OaiModel.prototype.toggleFilter = function(filter) {
-    filter.isOn = !filter.isOn;
-    var _this = this;
-    var onFilters = this.orFilters.filter(function(d) { return d.isOn });
-    if (onFilters.length < 1) {
-      this.filteredProducts = this.products;
-    } else {
-      this.filteredProducts = this.products.filter(function(d) {
-        var hits = 0;
-        onFilters.forEach(function(filter) {
-          if (filter.isHit(d)) ++hits;
-        });
-        return hits > 0;
-      });
-    }
-
-    var onAndFilters = this.andFilters.filter(function(d) { return d.isOn });
-    if (onAndFilters.length < 1) return;
-
-    var runAndFiltersInOrMode = (onFilters.length < 1);
-    this.filteredProducts = this.filteredProducts.filter(function(d) {
-      var hits = 0;
-      onAndFilters.forEach(function(filter) {
-        if (filter.isHit(d)) ++hits;
-      });
-      return (runAndFiltersInOrMode) ? hits > 0 : hits == onAndFilters.length;
-    });
-
-  };
-
-  OaiModel.prototype.clearFilters = function() {
-    this.orFilters.forEach(function(d) { d.isOn = false; });
-    this.andFilters.forEach(function(d) { d.isOn = false; });
-    this.filteredProducts = this.products;
-  };
+define(["d3", "react", "react-dom", "enquire", "backbone", "app/model", "app/dashboard", "app/products"],
+  function(d3, React, ReactDOM, enquire, Backbone, modelmodule, dashboard, products) {
 
   OaiRouter = Backbone.Router.extend({
     routes: {
@@ -211,8 +42,8 @@ define(["d3", "react", "react-dom", "enquire", "backbone", "app/dashboard", "app
   OaiPresenter.prototype.updateEndDateInfo = function() {
     var lastEntry = this.model.products[0]
     var lastEntryDate = lastEntry.releaseDate
-    this.endMonthContainer.text(monthFormatter(lastEntryDate));
-    this.endYearContainer.text(yearFormatter(lastEntryDate));
+    this.endMonthContainer.text(modelmodule.monthFormatter(lastEntryDate));
+    this.endYearContainer.text(modelmodule.yearFormatter(lastEntryDate));
   };
 
   OaiPresenter.prototype.update = function() {
@@ -253,7 +84,7 @@ define(["d3", "react", "react-dom", "enquire", "backbone", "app/dashboard", "app
     this.router.navigate(d, {trigger: true});
   }
 
-  var model = new OaiModel();
+  var model = new modelmodule.model();
   var presenter = new OaiPresenter(model);
   Backbone.history.start({root: "/outlier/"});
 

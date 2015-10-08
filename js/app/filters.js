@@ -88,7 +88,7 @@ define(["react"], function(React) {
     }
   });
 
-  var Filters = React.createFactory(FiltersClass)
+  var Filters = React.createFactory(FiltersClass);
 
   return { filters: Filters }
 })
