@@ -121,7 +121,7 @@ define(["react"], function(React) {
     },
 
     componentDidUpdate: function() {
-      var products = this.props.model.filteredProducts;
+      var products = this.props.presenter.filteredProducts;
       if (this.isTableMode()) {
         this.drawProductTable(d3.select("#products-table"), products);
       } else { // this.isGridMode()

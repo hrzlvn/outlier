@@ -57,7 +57,7 @@ define(["react"], function(React) {
         .append("button")
         .attr("class", "btn btn-default")
         .attr("data-toggle", "button")
-        .on("click", function(d) { _this.props.model.toggleFilter(d); _this.props.presenter.update(); })
+        .on("click", function(d) { _this.props.presenter.toggleFilter(d); })
         .text(function(d) { return d.type; });
     },
 
@@ -67,10 +67,10 @@ define(["react"], function(React) {
     },
 
     componentDidUpdate: function() {
-      this.drawFilter(d3.select("#clothes-filter"), {category: "Clothes", catName: "clothes", filters: this.props.model.clothes});
-      this.drawFilter(d3.select("#accessory-filter"), {category: "Objects", catName: "accessories", filters: this.props.model.accessories});
-      this.drawFilter(d3.select("#fabric-filter"), {category: "Fabric", catName: "fabric", filters: this.props.model.fabrics});
-      this.drawFilter(d3.select("#mwu-filter"), {category: "Men/Woman/Unisex", catName: "mwu", filters: this.props.model.mwu});
+      this.drawFilter(d3.select("#clothes-filter"), {category: "Clothes", catName: "clothes", filters: this.props.presenter.clothes});
+      this.drawFilter(d3.select("#accessory-filter"), {category: "Objects", catName: "accessories", filters: this.props.presenter.accessories});
+      this.drawFilter(d3.select("#fabric-filter"), {category: "Fabric", catName: "fabric", filters: this.props.presenter.fabrics});
+      this.drawFilter(d3.select("#mwu-filter"), {category: "Men/Woman/Unisex", catName: "mwu", filters: this.props.presenter.mwu});
     },
 
     render: function() {

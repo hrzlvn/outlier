@@ -165,8 +165,8 @@ define(["react"], function(React) {
     },
 
     componentDidUpdate: function() {
-      var products = this.props.model.filteredProducts;
-      var allProducts = this.props.model.products;
+      var products = this.props.presenter.filteredProducts;
+      var allProducts = this.props.presenter.products;
 
       this.drawPriceInfo(products, allProducts, d3.select("#price-container"), d3.select("#price-median-container"));
       this.drawMonthInfo(products, d3.select("#month-container"));

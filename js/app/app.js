@@ -47,6 +47,13 @@ define(["d3", "react", "react-dom", "enquire", "backbone", "app/model", "app/das
   };
 
   OaiPresenter.prototype.update = function() {
+    this.clothes = this.model.clothes;
+    this.accessories = this.model.accessories;
+    this.fabrics = this.model.fabrics;
+    this.mwu = this.model.mwu;
+    this.products = this.model.products;
+    this.filteredProducts = this.model.filteredProducts;
+
     ReactDOM.render(dashboard.dashboard({
         model: this.model, presenter: this,
         chartMargin: this.chartMargin, chartWidth: this.chartWidth, chartHeight: this.chartHeight
@@ -87,6 +94,11 @@ define(["d3", "react", "react-dom", "enquire", "backbone", "app/model", "app/das
   OaiPresenter.prototype.loadData = function(callback) {
     this.model.loadData(callback);
   }
+
+  OaiPresenter.prototype.toggleFilter = function (d) {
+    this.model.toggleFilter(d);
+    this.update();
+  };
 
   var presenter = new OaiPresenter();
   Backbone.history.start({root: "/outlier/"});
