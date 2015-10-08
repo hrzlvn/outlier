@@ -71,15 +71,19 @@ define(["react"], function(React) {
         .attr("href", function(d) { return d.link })
         .text(function(d) { return d.label });
 
-    var images = td.selectAll("a.image")
+    var images = td.selectAll("img")
         .data(function(d) { return d.images});
       images.enter().append("img")
-        .attr("src", function(d) { return d.src })
         .attr("class", "img-responsive")
+      images
+        .attr("src", function(d) { return d.src })
     },
 
     drawProductList: function(productsList, products) {
+      // Split the products into groups depending on the size of the screen
+      // Check props.images_per_col
       var list = productsList.selectAll("li").data(products);
+      var presenter = this.props.presenter;
       list
         .enter().append("li")
           .classed("col-lg-2 col-md-2 col-sm-3 col-xs-4", true)

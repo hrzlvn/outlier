@@ -208,11 +208,6 @@ define(["d3", "react", "enquire", "backbone", "app/dashboard", "app/products"], 
     this.chartHeight = 100 - margin.top - margin.bottom;
   }
 
-  /**
-   * @function Unpack data from a join
-   */
-  function unpack(d) { return d;}
-
   OaiPresenter.prototype.updateEndDateInfo = function() {
     var lastEntry = this.model.products[0]
     var lastEntryDate = lastEntry.releaseDate
@@ -264,6 +259,10 @@ define(["d3", "react", "enquire", "backbone", "app/dashboard", "app/products"], 
 
 
   function enterApp() {
+    // Use this to configure the grid
+    // enquire
+    //   .register("(min-width: 768px)", {match: function() { console.log("sm")}})
+    //   .register("(min-width: 992px)", {match: function() { console.log("md")}});
     model.loadData(function(rows) { presenter.initialDraw(); });
   }
 
