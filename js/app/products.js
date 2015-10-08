@@ -9,7 +9,7 @@
  /**
   * Implementation of the products display.
   */
-define(["react/react"], function(React) {
+define(["react"], function(React) {
 
   /**
    * @function Unpack data from a join

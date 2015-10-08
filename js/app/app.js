@@ -9,7 +9,7 @@
  /**
   * Implementation of the top-level logic for the archive.
   */
-define(["d3/d3", "react/react", "app/dashboard", "app/products"], function(d3, React, dashboard, products) {
+define(["d3", "react", "enquire", "app/dashboard", "app/products"], function(d3, React, enquire, dashboard, products) {
 
   var dateParser = d3.time.format("%Y-%m-%d");
   var dateFormatter = d3.time.format("%b %d %Y");

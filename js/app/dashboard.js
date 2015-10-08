@@ -9,7 +9,7 @@
  /**
   * Implementation of the component that acts as the dashboard with controls.
   */
-define(["react/react", "app/filters", "app/stats"], function(React, filters, stats) {
+define(["react", "app/filters", "app/stats"], function(React, filters, stats) {
 
   /**
    * @function Unpack data from a join

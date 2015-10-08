@@ -9,7 +9,7 @@
  /**
   * Implementation of the component that displays stats about the selected releases.
   */
-define(["react/react"], function(React) {
+define(["react"], function(React) {
 
   /**
    * @function Unpack data from a join
