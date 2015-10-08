@@ -9,14 +9,14 @@
 /**
  * Implementation of the component that handles filtering in the UI.
  */
-define(["react"], function(React) {
+define(["react", "underscore"], function(React, _) {
 
   /**
    * @function Unpack data from a join
    */
   function unpack(d) { return d;}
 
-  var FiltersClass = React.createClass({
+  var FilterClass = React.createClass({
 
     drawFilter: function(container, categoryDescription) {
       var _this = this;
@@ -67,15 +67,28 @@ define(["react"], function(React) {
     },
 
     componentDidUpdate: function() {
-      this.drawFilter(d3.select("#clothes-filter"), {category: "Clothes", catName: "clothes", filters: this.props.presenter.clothes});
-      this.drawFilter(d3.select("#accessory-filter"), {category: "Objects", catName: "accessories", filters: this.props.presenter.accessories});
-      this.drawFilter(d3.select("#fabric-filter"), {category: "Fabric", catName: "fabric", filters: this.props.presenter.fabrics});
-      this.drawFilter(d3.select("#mwu-filter"), {category: "Men/Woman/Unisex", catName: "mwu", filters: this.props.presenter.mwu});
+      this.drawFilter(d3.select("#"+this.props.filterId), this.props);
     },
 
     render: function() {
-      var filterIds = ["clothes-filter", "accessory-filter", "fabric-filter", "mwu-filter"];
-      var filters = filterIds.map(function(d) { return React.DOM.div({id: d, className: 'panel'})} );
+      var container = React.DOM.div({id: this.props.filterId, className: 'panel'})
+      return container;
+    }
+  });
+
+  var Filter = React.createFactory(FilterClass);
+
+  var FiltersClass = React.createClass({
+
+    render: function() {
+      var filterProps = [
+        {filterId: "clothes-filter", category: "Clothes", catName: "clothes", filters: this.props.presenter.clothes},
+        {filterId: "accessory-filter", category: "Objects", catName: "accessories", filters: this.props.presenter.accessories},
+        {filterId: "fabric-filter", category: "Fabric", catName: "fabric", filters: this.props.presenter.fabrics},
+        {filterId: "mwu-filter", category: "Men/Woman/Unisex", catName: "mwu", filters: this.props.presenter.mwu}
+      ]
+      var _this = this;
+      var filters = filterProps.map(function(d) { d.key = d.filterId; _.extend(d, _this.props); return Filter(d) });
       var panelGroup = React.DOM.div({className:'panel-group', id:'filters'}, filters);
       var clearButton = React.DOM.button({
         className:'btn btn-xs btn-default', id:'clear-button', type:'button'
