@@ -107,7 +107,7 @@ define(["d3", "react", "enquire", "backbone", "app/dashboard", "app/products"], 
         isHit: function(d) { return fabric == d["Fabric"] }
       }
     });
-    this.orFilters = this.orFilters.concat(this.fabrics);
+    this.andFilters = this.andFilters.concat(this.fabrics);
 
     var mwu = [];
     this.initializeFilterCodes(mwu, mwuMap);
