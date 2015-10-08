@@ -9,7 +9,7 @@
  /**
   * Implementation of the top-level logic for the archive.
   */
-define(["d3", "react", "enquire", "backbone", "app/dashboard", "app/products"], function(d3, React, enquire, Backbone, dashboard, products) {
+define(["d3", "react", "react-dom", "enquire", "backbone", "app/dashboard", "app/products"], function(d3, React, ReactDOM, enquire, Backbone, dashboard, products) {
 
   var dateParser = d3.time.format("%Y-%m-%d");
   var dateFormatter = d3.time.format("%b %d %Y");
@@ -216,11 +216,11 @@ define(["d3", "react", "enquire", "backbone", "app/dashboard", "app/products"], 
   };
 
   OaiPresenter.prototype.update = function() {
-    React.render(dashboard.dashboard({
+    ReactDOM.render(dashboard.dashboard({
         model: model, presenter: presenter,
         chartMargin: this.chartMargin, chartWidth: this.chartWidth, chartHeight: this.chartHeight
       }), $("#dashboard-container")[0]);
-    React.render(products.products({
+    ReactDOM.render(products.products({
         model: model, presenter: presenter, mode: "list", showImages: true, showLabels: true
       }), $("#products-container")[0]);
     this.updateEndDateInfo();

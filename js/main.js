@@ -16,6 +16,7 @@ require.config({
     "enquire": "enquire/enquire",
     "jquery": "jquery/jquery",
     "react": "react/react",
+    "react-dom": "react/react-dom",
     "underscore": "underscore/underscore"
   }
 });
