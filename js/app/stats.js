@@ -220,7 +220,7 @@ define(["react"], function(React) {
   });
 
   var StatsClass = React.createClass({
-
+    displayName: 'Stats',
     render: function() {
       var stats = [
         React.createElement(PriceStatsClass, this.props),

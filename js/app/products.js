@@ -23,6 +23,8 @@ define(["react"], function(React) {
   }
 
   var ProductsClass = React.createClass({
+    displayName: 'Products',
+
     productTableHeaders: function() {
       return (this.props.showImages) ? ["Image", "Product", "Price", "Release"] : ["Product", "Price", "Release"];
     },

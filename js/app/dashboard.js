@@ -17,7 +17,7 @@ define(["react", "app/filters", "app/stats"], function(React, filters, stats) {
   function unpack(d) { return d;}
 
   var DashboardClass = React.createClass({
-
+    displayName: 'Dashboard',
     render: function() {
       var row = React.DOM.div({className: 'row'}, [filters.filters(this.props), stats.stats(this.props)]);
       return row;

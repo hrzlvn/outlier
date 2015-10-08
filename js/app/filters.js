@@ -17,7 +17,7 @@ define(["react", "underscore"], function(React, _) {
   function unpack(d) { return d;}
 
   var FilterClass = React.createClass({
-
+    displayName: 'Filter',
     drawFilter: function(container, categoryDescription) {
       var _this = this;
       var toggles, group, panelCollapse, category, link;
@@ -79,7 +79,7 @@ define(["react", "underscore"], function(React, _) {
   var Filter = React.createFactory(FilterClass);
 
   var FiltersClass = React.createClass({
-
+    displayName: 'Filters',
     render: function() {
       var filterProps = [
         {filterId: "clothes-filter", category: "Clothes", catName: "clothes", filters: this.props.presenter.clothes},
