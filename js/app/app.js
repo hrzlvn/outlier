@@ -22,8 +22,8 @@ define(["d3", "react", "react-dom", "enquire", "backbone", "app/model", "app/das
    /**
     * @class
     */
-  function OaiPresenter(model) {
-    this.model = model;
+  function OaiPresenter() {
+    this.model = new modelmodule.model();
     this.endMonthContainer = d3.select("#endmonth");
     this.endYearContainer = d3.select("#endyear");
 
@@ -48,11 +48,11 @@ define(["d3", "react", "react-dom", "enquire", "backbone", "app/model", "app/das
 
   OaiPresenter.prototype.update = function() {
     ReactDOM.render(dashboard.dashboard({
-        model: model, presenter: presenter,
+        model: this.model, presenter: this,
         chartMargin: this.chartMargin, chartWidth: this.chartWidth, chartHeight: this.chartHeight
       }), $("#dashboard-container")[0]);
     ReactDOM.render(products.products({
-        model: model, presenter: presenter, mode: "list", showImages: true, showLabels: true
+        model: this.model, presenter: presenter, mode: "list", showImages: true, showLabels: true
       }), $("#products-container")[0]);
     this.updateEndDateInfo();
   }
@@ -84,8 +84,11 @@ define(["d3", "react", "react-dom", "enquire", "backbone", "app/model", "app/das
     this.router.navigate(d, {trigger: true});
   }
 
-  var model = new modelmodule.model();
-  var presenter = new OaiPresenter(model);
+  OaiPresenter.prototype.loadData = function(callback) {
+    this.model.loadData(callback);
+  }
+
+  var presenter = new OaiPresenter();
   Backbone.history.start({root: "/outlier/"});
 
 
@@ -94,7 +97,7 @@ define(["d3", "react", "react-dom", "enquire", "backbone", "app/model", "app/das
     // enquire
     //   .register("(min-width: 768px)", {match: function() { console.log("sm")}})
     //   .register("(min-width: 992px)", {match: function() { console.log("md")}});
-    model.loadData(function(rows) { presenter.initialDraw(); });
+    presenter.loadData(function(rows) { presenter.initialDraw(); });
   }
 
   return { enter: enterApp }
