@@ -26,7 +26,7 @@ define(["react", "app/stats"], function(React, stats) {
   var DetailsHeader = React.createFactory(DetailsHeaderClass);
 
   var DetailsStatsClass = React.createClass({
-    displayName: 'DetailsStatsHeader',
+    displayName: 'DetailsStats',
     render: function() {
       var product = this.props.product;
       var prices = product.releases.map(function(d) { return d["Price"] });
@@ -34,8 +34,15 @@ define(["react", "app/stats"], function(React, stats) {
       var maxPrice = d3.max(prices);
       var priceString = "Price: " + ((minPrice == maxPrice) ? "" + minPrice : "" + minPrice + " - " + maxPrice);
       var price = React.DOM.p({key: "price"}, null, priceString);
-      var column = React.DOM.div({key:'statsGroup', className: 'col-xs-6 col-md-6'}, [price]);
-      return React.DOM.div({className: 'row'}, [ column ]);
+      var priceColumn = React.DOM.div({key:'priceColumn', className: 'col-xs-3 col-md-3'}, [price]);
+
+      var statProps = _.extend({key: 'monthStats', products: product.releases}, this.props);
+      statProps.products = product.releases;
+      console.log(statProps);
+      var statsDisplay = [stats.monthStats(statProps)];
+      var statsGroup = React.DOM.div({key: 'statsGroup', className:'row'}, statsDisplay);
+      var statsColumn = React.DOM.div({key: 'statsColumn', className: 'col-xs-6 col-md-6'}, [statsGroup]);
+      return React.DOM.div({className: 'row'}, [ priceColumn, statsColumn]);
     }
   });
 

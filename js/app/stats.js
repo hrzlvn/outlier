@@ -129,8 +129,8 @@ define(["react"], function(React) {
     },
 
     componentDidUpdate: function() {
-      var products = this.props.presenter.filteredProducts;
-      var allProducts = this.props.presenter.products;
+      var products = this.props.products;
+      var allProducts = this.props.presenter.allProducts;
 
       this.drawPriceInfo(products, allProducts, d3.select("#price-container"), d3.select("#price-median-container"));
     },
@@ -139,6 +139,7 @@ define(["react"], function(React) {
       return statusElementDom("Price", ["price-container", "price-median-container"])
     }
   });
+  var PriceStats = React.createFactory(PriceStatsClass);
 
   var MonthStatsClass = React.createClass({
 
@@ -163,7 +164,7 @@ define(["react"], function(React) {
     },
 
     componentDidUpdate: function() {
-      var products = this.props.presenter.filteredProducts;
+      var products = this.props.products;
 
       this.drawMonthInfo(products, d3.select("#month-container"));
     },
@@ -172,6 +173,7 @@ define(["react"], function(React) {
       return statusElementDom("Month", ["month-container"]);
     }
   });
+  var MonthStats = React.createFactory(MonthStatsClass);
 
   var WeekdayStatsClass = React.createClass({
     displayName: 'WeekdayStats',
@@ -211,7 +213,7 @@ define(["react"], function(React) {
     },
 
     componentDidUpdate: function() {
-      var products = this.props.presenter.filteredProducts;
+      var products = this.props.products;
       this.drawWeekdayInfo(products, d3.select("#weekday-container"));
     },
 
@@ -219,14 +221,15 @@ define(["react"], function(React) {
       return statusElementDom("Weekday", ["weekday-container"]);
     }
   });
+  var WeekdayStats = React.createFactory(WeekdayStatsClass);
 
   var StatsClass = React.createClass({
     displayName: 'Stats',
     render: function() {
       var stats = [
-        React.createElement(PriceStatsClass, _.extend({key: 'priceStats'}, this.props)),
-        React.createElement(MonthStatsClass, _.extend({key: 'monthStats'}, this.props)),
-        React.createElement(WeekdayStatsClass,  _.extend({key: 'weekdayStats'}, this.props))
+        PriceStats(_.extend({key: 'priceStats'}, this.props)),
+        MonthStats(_.extend({key: 'monthStats'}, this.props)),
+        WeekdayStats(_.extend({key: 'weekdayStats'}, this.props))
       ];
       var statsGroup = React.DOM.div({key: 'statsGroup', className:'row'}, stats);
       var title = React.DOM.h3({key: 'statsTitle'}, 'Stats');
@@ -234,8 +237,10 @@ define(["react"], function(React) {
       return column;
     }
   });
+  var Stats = React.createFactory(StatsClass);
 
-  var Stats = React.createFactory(StatsClass)
-
-  return { stats: Stats }
+  return {
+    stats: Stats,
+    monthStats: MonthStats
+  }
 })

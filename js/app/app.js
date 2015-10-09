@@ -41,9 +41,9 @@ define(function(require, exports, module) {
           endyear: modelmodule.yearFormatter(lastEntryDate)
         });
       } else if (this.props.selectedProductName){
-        return details.details({
+        return details.details(_.extend({
           product: this.props.presenter.compileProduct(this.props.selectedProductName)
-        });
+        }, this.props));
       } else {
         return React.DOM.div({key:'App'}, [
           dashboard.dashboard(_.extend({key: 'dashboard-container'}, this.props)),
@@ -85,8 +85,10 @@ define(function(require, exports, module) {
     this.accessories = this.model.accessories;
     this.fabrics = this.model.fabrics;
     this.mwu = this.model.mwu;
-    this.products = this.model.products;
-    this.filteredProducts = this.model.filteredProducts;
+    this.allProducts = this.model.products;
+    this.products = this.model.filteredProducts;
+
+    this.props.products = this.products;
 
     if (this.props.showAbout) {
       $('#about-widget').addClass("active");
