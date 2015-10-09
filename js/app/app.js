@@ -19,7 +19,7 @@ define(function(require, exports, module) {
   var modelmodule = require("app/model");
   var dashboard = require("app/dashboard");
   var products = require("app/products");
-  
+  var about = require("es6!app/about");
 
   OaiRouter = Backbone.Router.extend({
     routes: {
@@ -31,12 +31,21 @@ define(function(require, exports, module) {
   var AppClass = React.createClass({
     displayName: 'App',
     render: function() {
-      return React.DOM.div({key:'App'}, [
-        dashboard.dashboard(_.extend({key: 'dashboard-container'}, this.props)),
-        products.products(
-          _.extend({key: 'products-container', mode: "list", showImages: true, showLabels: true}, this.props)
-        )
-      ]);
+      if (this.props.showAbout) {
+        var lastEntry = this.props.model.products[0];
+        var lastEntryDate = lastEntry.releaseDate;
+        return about.about({
+          endmonth: modelmodule.monthFormatter(lastEntryDate),
+          endyear: modelmodule.yearFormatter(lastEntryDate)
+        });
+      } else {
+        return React.DOM.div({key:'App'}, [
+          dashboard.dashboard(_.extend({key: 'dashboard-container'}, this.props)),
+          products.products(
+            _.extend({key: 'products-container', mode: "list", showImages: true, showLabels: true}, this.props)
+          )
+        ]);
+      }
     }
   });
 
@@ -46,6 +55,8 @@ define(function(require, exports, module) {
     this.model = new modelmodule.model();
     this.endMonthContainer = d3.select("#endmonth");
     this.endYearContainer = d3.select("#endyear");
+    this.showAbout = false;
+    this.hasData = false;
 
     var _this = this;
     this.router = new OaiRouter();
@@ -67,6 +78,7 @@ define(function(require, exports, module) {
   };
 
   OaiPresenter.prototype.update = function() {
+    if (!this.hasData) return;
     this.clothes = this.model.clothes;
     this.accessories = this.model.accessories;
     this.fabrics = this.model.fabrics;
@@ -76,6 +88,7 @@ define(function(require, exports, module) {
 
     ReactDOM.render(App({
         model: this.model, presenter: this,
+        showAbout: this.showAbout,
         chartMargin: this.chartMargin, chartWidth: this.chartWidth, chartHeight: this.chartHeight
       }), $("#app-container")[0]);
     this.updateEndDateInfo();
@@ -88,7 +101,8 @@ define(function(require, exports, module) {
 
   OaiPresenter.prototype.showAboutPage = function() {
     // Show the about page
-    console.log(["showAboutPage"])
+    this.showAbout = true;
+    this.update();
   }
 
   OaiPresenter.prototype.clearFilters = function() {
@@ -99,6 +113,7 @@ define(function(require, exports, module) {
   }
 
   OaiPresenter.prototype.initialDraw = function() {
+    this.hasData = true;
     this.update();
     var _this = this;
     $('#clear-button').on("click", function(e) { _this.clearFilters() });
@@ -119,7 +134,6 @@ define(function(require, exports, module) {
 
   var presenter = new OaiPresenter();
   Backbone.history.start({root: "/outlier/"});
-
 
   function enterApp() {
     // Use this to configure the grid
