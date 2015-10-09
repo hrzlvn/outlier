@@ -85,7 +85,8 @@ define(["react"], function(React) {
   };
 
   function statusElementDom(name, subs) {
-    var title = React.DOM.h4(null, name);
+    // Key is necessary to keep react from complaining
+    var title = React.DOM.h4({key: "title"}, name);
     var statElts = subs.map(function(s) { return React.DOM.span({id: s, key: s}) });
     statElts.unshift(title);
     return React.DOM.div({className: 'col-xs-4 col-md-4', style: {width: '110px'}}, statElts);
@@ -223,13 +224,13 @@ define(["react"], function(React) {
     displayName: 'Stats',
     render: function() {
       var stats = [
-        React.createElement(PriceStatsClass, this.props),
-        React.createElement(MonthStatsClass, this.props),
-        React.createElement(WeekdayStatsClass, this.props)
+        React.createElement(PriceStatsClass, _.extend({key: 'priceStats'}, this.props)),
+        React.createElement(MonthStatsClass, _.extend({key: 'monthStats'}, this.props)),
+        React.createElement(WeekdayStatsClass,  _.extend({key: 'weekdayStats'}, this.props))
       ];
-      var statsGroup = React.DOM.div({className:'row'}, stats);
-      var title = React.DOM.h3(null, 'Stats');
-      var column = React.DOM.div({className: 'col-xs-6 col-md-6'}, [title, statsGroup]);
+      var statsGroup = React.DOM.div({key: 'statsGroup', className:'row'}, stats);
+      var title = React.DOM.h3({key: 'statsTitle'}, 'Stats');
+      var column = React.DOM.div({key: 'statusCol', className: 'col-xs-6 col-md-6'}, [title, statsGroup]);
       return column;
     }
   });

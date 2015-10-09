@@ -132,20 +132,21 @@ define(["react"], function(React) {
     },
 
     render: function() {
-      var title = React.DOM.h3(null, "Products");
+      var title = React.DOM.h3({key: 'productsTitle'}, "Products");
       var elts = [title];
       if (this.isTableMode()) {
-        var table = React.DOM.table({id: 'products-table', className: 'table' });
+        var table = React.DOM.table({key: 'productsTable', id: 'products-table', className: 'table' });
         elts.push(table);
       } else {
         var list = React.DOM.ul({
+          key: 'productsList',
           id: 'products-list', className: 'row',
           style: { padding: "0 0 0 0", margin: "0 0 0 0" }
         });
         elts.push(list);
       }
-      var column = React.DOM.div({className: 'col-xs-12 col-md-12'}, elts);
-      var row = React.DOM.div({className: 'row'}, [column]);
+      var column = React.DOM.div({key: 'productsColumn', className: 'col-xs-12 col-md-12'}, elts);
+      var row = React.DOM.div({key: 'productsRow', className: 'row'}, [column]);
       return row;
     }
   });

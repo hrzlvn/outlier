@@ -89,14 +89,14 @@ define(["react", "underscore"], function(React, _) {
       ]
       var _this = this;
       var filters = filterProps.map(function(d) { d.key = d.filterId; _.extend(d, _this.props); return Filter(d) });
-      var panelGroup = React.DOM.div({className:'panel-group', id:'filters'}, filters);
+      var panelGroup = React.DOM.div({key:'panelGroup', className:'panel-group', id:'filters'}, filters);
       var clearButton = React.DOM.button({
         className:'btn btn-xs btn-default', id:'clear-button', type:'button'
       }, 'Clear All');
-      var clearGroup = React.DOM.div({style: {paddingBottom: "10px"}}, clearButton);
+      var clearGroup = React.DOM.div({key:'clearGroup', style: {paddingBottom: "10px"}}, clearButton);
 
-      var title = React.DOM.h3(null, 'Filter');
-      var column = React.DOM.div({className: 'col-xs-6 col-md-6'}, [title, clearGroup, panelGroup]);
+      var title = React.DOM.h3({key:'title'}, 'Filter');
+      var column = React.DOM.div({key:'filtersGroup', className: 'col-xs-6 col-md-6'}, [title, clearGroup, panelGroup]);
       return column;
     }
   });

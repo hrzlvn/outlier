@@ -19,7 +19,11 @@ define(["react", "app/filters", "app/stats"], function(React, filters, stats) {
   var DashboardClass = React.createClass({
     displayName: 'Dashboard',
     render: function() {
-      var row = React.DOM.div({className: 'row'}, [filters.filters(this.props), stats.stats(this.props)]);
+      var row =
+        React.DOM.div(
+            {className: 'row'},
+            [ filters.filters(_.extend({key: 'dashboardFilters'}, this.props)),
+              stats.stats(_.extend({key: 'dashboardStats'}, this.props)) ]);
       return row;
     }
   });
