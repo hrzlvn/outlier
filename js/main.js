@@ -11,6 +11,8 @@
 require.config({
   "urlArgs": "bust=" +  (new Date()).getTime(),
   "paths": {
+    "babel": "babel/babel-5.8.22.min",
+    "es6": "babel/es6",
     "backbone": "backbone/backbone",
     "d3": "d3/d3",
     "enquire": "enquire/enquire",

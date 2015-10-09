@@ -9,8 +9,17 @@
  /**
   * Implementation of the top-level logic for the archive.
   */
-define(["d3", "react", "react-dom", "enquire", "backbone", "app/model", "app/dashboard", "app/products"],
-  function(d3, React, ReactDOM, enquire, Backbone, modelmodule, dashboard, products) {
+define(function(require, exports, module) {
+
+  var d3 = require("d3");
+  var React = require("react");
+  var ReactDOM = require("react-dom");
+  var enquire = require("enquire");
+  var Backbone = require("backbone");
+  var modelmodule = require("app/model");
+  var dashboard = require("app/dashboard");
+  var products = require("app/products");
+  
 
   OaiRouter = Backbone.Router.extend({
     routes: {
@@ -26,7 +35,7 @@ define(["d3", "react", "react-dom", "enquire", "backbone", "app/model", "app/das
         dashboard.dashboard(_.extend({key: 'dashboard-container'}, this.props)),
         products.products(
           _.extend({key: 'products-container', mode: "list", showImages: true, showLabels: true}, this.props)
-        ) 
+        )
       ]);
     }
   });
