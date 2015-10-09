@@ -88,6 +88,11 @@ define(function(require, exports, module) {
     } else {
       $('#about-widget').removeClass("active");
     }
+    if (this.props.showImages) {
+      $('#images-widget').addClass("active");
+    } else {
+      $('#images-widget').removeClass("active");
+    }
     ReactDOM.render(
       App(_.extend({model: this.model, presenter: this}, this.props)),
       $("#app-container")[0]);
@@ -136,10 +141,19 @@ define(function(require, exports, module) {
     this.update();
   };
 
+  OaiPresenter.prototype.toggleImages = function() {
+    this.props.showImages = !this.props.showImages;
+    this.props.mode = (this.props.showImages) ? "list" : "table";
+    this.update();
+  };
+
   var presenter = new OaiPresenter();
   Backbone.history.start({root: "/outlier/"});
 
   function enterApp() {
+    $('#images-control').click(function(event) {
+      presenter.toggleImages();
+    });
     // Use this to configure the grid
     // enquire
     //   .register("(min-width: 768px)", {match: function() { console.log("sm")}})
