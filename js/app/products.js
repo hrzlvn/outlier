@@ -116,6 +116,7 @@ define(["react"], function(React) {
     isTableMode: function() { return this.props.mode == "table" },
     isGridMode: function() { return this.props.mode == "grid" },
     isShowLabels: function() { return this.props.showLabels },
+    isDrawLinks: function() { return this.props.drawLinks },
 
     componentDidMount: function() {
       // Just update the component
@@ -150,8 +151,79 @@ define(["react"], function(React) {
       return row;
     }
   });
+  var Products = React.createFactory(ProductsClass);
 
-  var Products = React.createFactory(ProductsClass)
+  var ReleasesClass = React.createClass({
+    displayName: 'Releases',
 
-  return { products: Products }
+    productTableHeaders: function() {
+      return ["Image", "Price", "Colors", "Release"];
+    },
+
+    productTableColumns: function(row, headers) {
+      var showImages = this.props.showImages;
+      var imageColumnIdx = (showImages) ? 0 : -1;
+      return headers.map(function(d, i) {
+        var links = [];
+        var images = [];
+        if (i == imageColumnIdx && row["Image"] && row["Image"].length > 0) {
+          link = null;
+          if (row["InSitu"].length > 0) link = row["InSitu"].length;
+          images = [{src: row["Image"], link: link }];
+        }
+        return {label: row[d], links: links, images: images}
+      })
+    },
+
+    drawProductTable: function(productsTable, products) {
+      var headers = this.productTableHeaders();
+      var thead = productsTable.selectAll("thead").data([[headers]]);
+      thead.enter().append("thead");
+      var headerRow = thead.selectAll("tr").data(unpack);
+      headerRow.enter().append("tr");
+      var headerData = headerRow.selectAll("th").data(unpack);
+      headerData.enter().append("th").text(unpack);
+
+      var tbody = productsTable.selectAll("tbody").data([products]);
+      tbody.enter().append("tbody");
+      var tr = tbody.selectAll("tr").data(unpack);
+      tr.enter().append("tr");
+      tr.exit().transition(1000).style("opacity", 0).remove();
+      var _this = this;
+      var td = tr.selectAll("td").data(function(row) { return _this.productTableColumns(row, headers)});
+      td.enter().append("td");
+      td.text(rowLabel);
+
+    var images = td.selectAll("img")
+        .data(function(d) { return d.images});
+      images.enter().append("img")
+        .attr("height", "100")
+        ;
+      images
+        .attr("src", function(d) { return d.src })
+    },
+
+    componentDidMount: function() {
+      // Just update the component
+      this.componentDidUpdate();
+    },
+
+    componentDidUpdate: function() {
+      var products = this.props.products;
+      this.drawProductTable(d3.select("#products-table"), products);
+    },
+
+    render: function() {
+      var title = React.DOM.h3({key: 'productsTitle'}, "Releases");
+      var elts = [title];
+      var table = React.DOM.table({key: 'productsTable', id: 'products-table', className: 'table' });
+      elts.push(table);
+      var column = React.DOM.div({key: 'productsColumn', className: 'col-xs-12 col-md-12'}, elts);
+      var row = React.DOM.div({key: 'productsRow', className: 'row'}, [column]);
+      return row;
+    }
+  });
+  var Releases = React.createFactory(ReleasesClass);
+
+  return { products: Products, releases: Releases }
 })

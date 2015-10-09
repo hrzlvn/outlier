@@ -74,7 +74,7 @@ define(function(require, exports, module) {
     this.props.chartWidth = 100 - margin.left - margin.right;
     this.props.chartHeight = 100 - margin.top - margin.bottom;
     this.props.showAbout = false;
-    this.props.mode =  "list";
+    this.props.mode =  "grid";
     this.props.showImages = true;
     this.props.showLabels = true;
   }
