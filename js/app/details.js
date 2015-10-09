@@ -11,11 +11,6 @@
   */
 define(["react", "app/stats"], function(React, stats) {
 
-  /**
-   * @function Unpack data from a join
-   */
-  function unpack(d) { return d;}
-
   var DetailsHeaderClass = React.createClass({
     displayName: 'DetailsHeader',
     render: function() {
@@ -24,18 +19,35 @@ define(["react", "app/stats"], function(React, stats) {
       var googleUrl = "https://google.com/search?q=" + encodeURI(this.props.product["Product"]);
       var googleLink = React.DOM.a({key: 'googleLink', href: googleUrl }, "Google");
       var column = React.DOM.div({key:'headerGroup', className: 'col-xs-6 col-md-6'}, [title, outlierLink, " / ", googleLink]);
-      var row =
-        React.DOM.div({className: 'row'}, [ column ]);
-      return row;
+      return React.DOM.div({className: 'row'}, [ column ]);
     }
   });
 
   var DetailsHeader = React.createFactory(DetailsHeaderClass);
 
+  var DetailsStatsClass = React.createClass({
+    displayName: 'DetailsStatsHeader',
+    render: function() {
+      var product = this.props.product;
+      var prices = product.releases.map(function(d) { return d["Price"] });
+      var minPrice = d3.min(prices);
+      var maxPrice = d3.max(prices);
+      var priceString = "Price: " + ((minPrice == maxPrice) ? "" + minPrice : "" + minPrice + " - " + maxPrice);
+      var price = React.DOM.p({key: "price"}, null, priceString);
+      var column = React.DOM.div({key:'statsGroup', className: 'col-xs-6 col-md-6'}, [price]);
+      return React.DOM.div({className: 'row'}, [ column ]);
+    }
+  });
+
+  var DetailsStats = React.createFactory(DetailsStatsClass);
+
   var DetailsClass = React.createClass({
     displayName: 'Details',
     render: function() {
-      return React.DOM.div(null, [ DetailsHeader(_.extend({key: "header"}, this.props)) ]);
+      return React.DOM.div(null, [
+        DetailsHeader(_.extend({key: "header"}, this.props)),
+        DetailsStats(_.extend({key: "stats"}, this.props))
+      ]);
     }
   });
 
