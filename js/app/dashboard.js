@@ -11,11 +11,6 @@
   */
 define(["react", "app/filters", "app/stats"], function(React, filters, stats) {
 
-  /**
-   * @function Unpack data from a join
-   */
-  function unpack(d) { return d;}
-
   var DashboardClass = React.createClass({
     displayName: 'Dashboard',
     render: function() {

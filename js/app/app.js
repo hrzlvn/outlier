@@ -20,6 +20,7 @@ define(function(require, exports, module) {
   var dashboard = require("app/dashboard");
   var products = require("app/products");
   var about = require("es6!app/about");
+  var details = require("app/details");
 
   OaiRouter = Backbone.Router.extend({
     routes: {
@@ -38,6 +39,10 @@ define(function(require, exports, module) {
         return about.about({
           endmonth: modelmodule.monthFormatter(lastEntryDate),
           endyear: modelmodule.yearFormatter(lastEntryDate)
+        });
+      } else if (this.props.selectedProductName){
+        return details.details({
+          product: this.props.presenter.compileProduct(this.props.selectedProductName)
         });
       } else {
         return React.DOM.div({key:'App'}, [
@@ -98,9 +103,18 @@ define(function(require, exports, module) {
       $("#app-container")[0]);
   }
 
-  OaiPresenter.prototype.showProductPage = function(product) {
+  OaiPresenter.prototype.compileProduct = function(productName) {
+    var releases = this.model.products.filter(function(d) { return d["Product"] == productName});
+    if (releases.length < 1) return releases;
+    var product = {"Product": releases[0]["Product"], "InSitu": releases[0]["InSitu"]};
+    product.releases = releases;
+    return product;
+  }
+
+  OaiPresenter.prototype.showProductPage = function(productName) {
     // Show the product details page
-    console.log(["showProductPage", product])
+    this.props.selectedProductName = productName;
+    this.update();
   }
 
   OaiPresenter.prototype.showAboutPage = function() {
@@ -111,6 +125,7 @@ define(function(require, exports, module) {
 
   OaiPresenter.prototype.showHomePage = function() {
     this.props.showAbout = false;
+    this.props.selectedProductName = null;
     this.update();
   }
 
