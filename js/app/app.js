@@ -19,9 +19,20 @@ define(["d3", "react", "react-dom", "enquire", "backbone", "app/model", "app/das
     }
   });
 
-   /**
-    * @class
-    */
+  var AppClass = React.createClass({
+    displayName: 'App',
+    render: function() {
+      return React.DOM.div({key:'App'}, [
+        dashboard.dashboard(_.extend({key: 'dashboard-container'}, this.props)),
+        products.products(
+          _.extend({key: 'products-container', mode: "list", showImages: true, showLabels: true}, this.props)
+        ) 
+      ]);
+    }
+  });
+
+  var App = React.createFactory(AppClass);
+
   function OaiPresenter() {
     this.model = new modelmodule.model();
     this.endMonthContainer = d3.select("#endmonth");
@@ -54,13 +65,10 @@ define(["d3", "react", "react-dom", "enquire", "backbone", "app/model", "app/das
     this.products = this.model.products;
     this.filteredProducts = this.model.filteredProducts;
 
-    ReactDOM.render(dashboard.dashboard({
+    ReactDOM.render(App({
         model: this.model, presenter: this,
         chartMargin: this.chartMargin, chartWidth: this.chartWidth, chartHeight: this.chartHeight
-      }), $("#dashboard-container")[0]);
-    ReactDOM.render(products.products({
-        model: this.model, presenter: presenter, mode: "list", showImages: true, showLabels: true
-      }), $("#products-container")[0]);
+      }), $("#app-container")[0]);
     this.updateEndDateInfo();
   }
 
