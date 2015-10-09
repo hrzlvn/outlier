@@ -23,6 +23,7 @@ define(function(require, exports, module) {
 
   OaiRouter = Backbone.Router.extend({
     routes: {
+      "": "home",
       "about":  "about",
       "product/:product": "product"
     }
@@ -61,6 +62,7 @@ define(function(require, exports, module) {
     var _this = this;
     this.router = new OaiRouter();
     this.router.presenter = this;
+    this.router.on("route:home", function() { _this.showHomePage() });
     this.router.on("route:product", function(product) { _this.showProductPage(product) });
     this.router.on("route:about", function() { _this.showAboutPage() });
 
@@ -102,6 +104,11 @@ define(function(require, exports, module) {
   OaiPresenter.prototype.showAboutPage = function() {
     // Show the about page
     this.showAbout = true;
+    this.update();
+  }
+
+  OaiPresenter.prototype.showHomePage = function() {
+    this.showAbout = false;
     this.update();
   }
 
