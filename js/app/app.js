@@ -43,7 +43,7 @@ define(function(require, exports, module) {
         return React.DOM.div({key:'App'}, [
           dashboard.dashboard(_.extend({key: 'dashboard-container'}, this.props)),
           products.products(
-            _.extend({key: 'products-container', mode: "list", showImages: true, showLabels: true}, this.props)
+            _.extend({key: 'products-container'}, this.props)
           )
         ]);
       }
@@ -54,9 +54,6 @@ define(function(require, exports, module) {
 
   function OaiPresenter() {
     this.model = new modelmodule.model();
-    this.endMonthContainer = d3.select("#endmonth");
-    this.endYearContainer = d3.select("#endyear");
-    this.showAbout = false;
     this.hasData = false;
 
     var _this = this;
@@ -66,18 +63,16 @@ define(function(require, exports, module) {
     this.router.on("route:product", function(product) { _this.showProductPage(product) });
     this.router.on("route:about", function() { _this.showAboutPage() });
 
+    this.props = {};
     var margin = {top: 0, right: 0, bottom: 0, left: 0};
-    this.chartMargin = margin;
-    this.chartWidth = 100 - margin.left - margin.right;
-    this.chartHeight = 100 - margin.top - margin.bottom;
+    this.props.chartMargin = margin;
+    this.props.chartWidth = 100 - margin.left - margin.right;
+    this.props.chartHeight = 100 - margin.top - margin.bottom;
+    this.props.showAbout = false;
+    this.props.mode =  "list";
+    this.props.showImages = true;
+    this.props.showLabels = true;
   }
-
-  OaiPresenter.prototype.updateEndDateInfo = function() {
-    var lastEntry = this.model.products[0]
-    var lastEntryDate = lastEntry.releaseDate
-    this.endMonthContainer.text(modelmodule.monthFormatter(lastEntryDate));
-    this.endYearContainer.text(modelmodule.yearFormatter(lastEntryDate));
-  };
 
   OaiPresenter.prototype.update = function() {
     if (!this.hasData) return;
@@ -88,12 +83,14 @@ define(function(require, exports, module) {
     this.products = this.model.products;
     this.filteredProducts = this.model.filteredProducts;
 
-    ReactDOM.render(App({
-        model: this.model, presenter: this,
-        showAbout: this.showAbout,
-        chartMargin: this.chartMargin, chartWidth: this.chartWidth, chartHeight: this.chartHeight
-      }), $("#app-container")[0]);
-    this.updateEndDateInfo();
+    if (this.props.showAbout) {
+      $('#about-widget').addClass("active");
+    } else {
+      $('#about-widget').removeClass("active");
+    }
+    ReactDOM.render(
+      App(_.extend({model: this.model, presenter: this}, this.props)),
+      $("#app-container")[0]);
   }
 
   OaiPresenter.prototype.showProductPage = function(product) {
@@ -103,12 +100,12 @@ define(function(require, exports, module) {
 
   OaiPresenter.prototype.showAboutPage = function() {
     // Show the about page
-    this.showAbout = true;
+    this.props.showAbout = true;
     this.update();
   }
 
   OaiPresenter.prototype.showHomePage = function() {
-    this.showAbout = false;
+    this.props.showAbout = false;
     this.update();
   }
 
@@ -134,7 +131,7 @@ define(function(require, exports, module) {
     this.model.loadData(callback);
   }
 
-  OaiPresenter.prototype.toggleFilter = function (d) {
+  OaiPresenter.prototype.toggleFilter = function(d) {
     this.model.toggleFilter(d);
     this.update();
   };
