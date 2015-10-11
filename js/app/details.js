@@ -34,14 +34,39 @@ define(["react", "app/stats", "app/products"], function(React, stats, products) 
 
   var DetailsStatsClass = React.createClass({
     displayName: 'DetailsStats',
+
+    uniqueImageReleases: function() {
+      var product = this.props.product;
+      var releases = product.releases;
+      var uniqueImageReleases = {};
+      releases.forEach(function(d) {
+        var key = d["Image"];
+        if (!uniqueImageReleases[key]) uniqueImageReleases[key] = d;
+      });
+      var values = $.map(uniqueImageReleases, function(v,k) { return v });
+      values.sort(function(a, b) { return b["Release"] - a["Release"]});
+      return values;
+    },
+
     render: function() {
       var product = this.props.product;
-      var passOnProps = _.omit(this.props, "products");
+      var passOnProps = _.omit(this.props, ["products", "showLabels"]);
       passOnProps.products = product.releases;
       var statsDisplay = [stats.monthStats(_.extend({key: 'monthStats'}, passOnProps))];
       var statsGroup = React.DOM.div({key: 'statsGroup', className:'row'}, statsDisplay);
-      var statsColumn = React.DOM.div({key: 'statsColumn', className: 'col-xs-6 col-md-6'}, [statsGroup]);
-      return React.DOM.div({className: 'row'}, [ statsColumn ]);
+      var statsColumn = React.DOM.div({key: 'statsColumn', className: 'col-xs-6 col-md-6'}, [statsGroup, imagesColumn]);
+      var productsGridProps = _.extend(
+        {key: 'imagesGrid', mode: "grid", showImages: true, drawLinks: false, showLabels: false},
+        passOnProps,
+        {products: this.uniqueImageReleases(product.releases)});
+      var imagesColumn = React.DOM.div(
+        {key: 'imagesColumn', className: 'col-xs-6 col-md-6'},
+        [
+          React.DOM.h4({key: 'productsTitle'}, "Images"),
+          products.productsGrid(productsGridProps)
+        ]
+      );
+      return React.DOM.div({className: 'row'}, [ statsColumn, imagesColumn ]);
     }
   });
   var DetailsStats = React.createFactory(DetailsStatsClass);
@@ -53,8 +78,11 @@ define(["react", "app/stats", "app/products"], function(React, stats, products) 
       var passOnProps = _.omit(this.props, ["products", "mode", "showImages"]);
       passOnProps.products = product.releases;
       var imagesColumn = React.DOM.div(
-        {key: 'imagesColumn', className: 'col-xs-12 col-md-12'},
-        [products.releases(_.extend({key: 'imagesTable', mode: "table", showImages: true}, passOnProps))]
+        {key: 'releasesColumn', className: 'col-xs-12 col-md-12'},
+        [products.releases(_.extend(
+          {key: 'releasesTable', mode: "list", showImages: false, drawLinks: true},
+          passOnProps)
+        )]
       );
       return React.DOM.div({className: 'row'}, [imagesColumn]);
     }
