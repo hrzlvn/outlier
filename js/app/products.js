@@ -22,8 +22,8 @@ define(["react"], function(React) {
     return d.label;
   }
 
-  var ProductsClass = React.createClass({
-    displayName: 'Products',
+  var ProductsTableClass = React.createClass({
+    displayName: 'ProductsTable',
 
     productTableHeaders: function() {
       return (this.props.showImages) ? ["Image", "Product", "Price", "Release"] : ["Product", "Price", "Release"];
@@ -81,6 +81,28 @@ define(["react"], function(React) {
         .attr("src", function(d) { return d.src })
     },
 
+    isShowLabels: function() { return this.props.showLabels },
+    isDrawLinks: function() { return this.props.drawLinks },
+
+    componentDidMount: function() {
+      // Just update the component
+      this.componentDidUpdate();
+    },
+
+    componentDidUpdate: function() {
+      var products = this.props.products;
+      this.drawProductTable(d3.select("#products-table"), products);
+    },
+
+    render: function() {
+      return React.DOM.table({id: 'products-table', className: 'table' });
+    }
+  });
+  var ProductsTable = React.createFactory(ProductsTableClass);
+
+  var ProductsGridClass = React.createClass({
+    displayName: 'ProductsGrid',
+
     drawProductList: function(productsList, products) {
       // Split the products into groups depending on the size of the screen
       // Check props.images_per_col
@@ -113,8 +135,6 @@ define(["react"], function(React) {
         .attr("src", function(d) { return d });
     },
 
-    isTableMode: function() { return this.props.mode == "table" },
-    isGridMode: function() { return this.props.mode == "grid" },
     isShowLabels: function() { return this.props.showLabels },
     isDrawLinks: function() { return this.props.drawLinks },
 
@@ -125,25 +145,32 @@ define(["react"], function(React) {
 
     componentDidUpdate: function() {
       var products = this.props.products;
-      if (this.isTableMode()) {
-        this.drawProductTable(d3.select("#products-table"), products);
-      } else { // this.isGridMode()
-        this.drawProductList(d3.select("#products-list"), products);
-      }
+      this.drawProductList(d3.select("#products-list"), products);
     },
+
+    render: function() {
+      return React.DOM.ul({
+        id: 'products-list', className: 'row',
+        style: { padding: "0 0 0 0", margin: "0 0 0 0" }
+      });
+    }
+  });
+  var ProductsGrid = React.createFactory(ProductsGridClass);
+
+  var ProductsClass = React.createClass({
+    displayName: 'Products',
+
+    isTableMode: function() { return this.props.mode == "table" },
+    isGridMode: function() { return this.props.mode == "grid" },
 
     render: function() {
       var title = React.DOM.h3({key: 'productsTitle'}, "Products");
       var elts = [title];
       if (this.isTableMode()) {
-        var table = React.DOM.table({key: 'productsTable', id: 'products-table', className: 'table' });
+        var table = ProductsTable(_.extend({key: 'productsTable'}, this.props));
         elts.push(table);
       } else {
-        var list = React.DOM.ul({
-          key: 'productsList',
-          id: 'products-list', className: 'row',
-          style: { padding: "0 0 0 0", margin: "0 0 0 0" }
-        });
+        var list = ProductsGrid(_.extend({key: 'productsList'}, this.props));
         elts.push(list);
       }
       var column = React.DOM.div({key: 'productsColumn', className: 'col-xs-12 col-md-12'}, elts);
@@ -225,5 +252,10 @@ define(["react"], function(React) {
   });
   var Releases = React.createFactory(ReleasesClass);
 
-  return { products: Products, releases: Releases }
+  return {
+    products: Products,
+    productsGrid: ProductsGrid,
+    productsTable: ProductsTable,
+    releases: Releases
+  };
 })
