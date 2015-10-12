@@ -287,8 +287,8 @@ define(["react"], function(React) {
   var Stats = React.createFactory(StatsClass);
 
   return {
-    stats: Stats,
-    seasonStats: SeasonStats,
-    monthStats: MonthStats
+    Stats: Stats,
+    SeasonStats: SeasonStats,
+    MonthStats: MonthStats
   }
 })

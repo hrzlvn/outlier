@@ -53,8 +53,8 @@ define(["react", "app/stats", "app/products"], function(React, stats, products) 
       var passOnProps = _.omit(this.props, ["products", "showLabels"]);
       passOnProps.products = product.releases;
       var statsDisplay = [
-        stats.seasonStats(_.extend({key: 'seasonStats'}, passOnProps)),
-        stats.monthStats(_.extend({key: 'monthStats'}, passOnProps))
+        stats.SeasonStats(_.extend({key: 'seasonStats'}, passOnProps)),
+        stats.MonthStats(_.extend({key: 'monthStats'}, passOnProps))
       ];
       var statsGroup = React.DOM.div({key: 'statsGroup', className:'row'}, statsDisplay);
       var statsColumn = React.DOM.div({key: 'statsColumn', className: 'col-xs-6 col-md-6'}, [statsGroup, imagesColumn]);
@@ -66,7 +66,7 @@ define(["react", "app/stats", "app/products"], function(React, stats, products) 
         {key: 'imagesColumn', className: 'col-xs-6 col-md-6'},
         [
           React.DOM.h4({key: 'productsTitle'}, "Images"),
-          products.productsGrid(productsGridProps)
+          products.ProductsGrid(productsGridProps)
         ]
       );
       return React.DOM.div({className: 'row'}, [ statsColumn, imagesColumn ]);
@@ -82,7 +82,7 @@ define(["react", "app/stats", "app/products"], function(React, stats, products) 
       passOnProps.products = product.releases;
       var imagesColumn = React.DOM.div(
         {key: 'releasesColumn', className: 'col-xs-12 col-md-12'},
-        [products.releases(_.extend(
+        [products.Releases(_.extend(
           {key: 'releasesTable', mode: "list", showImages: false, drawLinks: true},
           passOnProps)
         )]
@@ -105,5 +105,5 @@ define(["react", "app/stats", "app/products"], function(React, stats, products) 
 
   var Details = React.createFactory(DetailsClass);
 
-  return { details: Details }
+  return { Details: Details }
 })

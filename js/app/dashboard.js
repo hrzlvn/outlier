@@ -18,7 +18,7 @@ define(["react", "app/filters", "app/stats"], function(React, filters, stats) {
         React.DOM.div(
             {className: 'row'},
             [ filters.filters(_.extend({key: 'dashboardFilters'}, this.props)),
-              stats.stats(_.extend({key: 'dashboardStats'}, this.props)) ]);
+              stats.Stats(_.extend({key: 'dashboardStats'}, this.props)) ]);
       return row;
     }
   });

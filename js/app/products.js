@@ -253,9 +253,9 @@ define(["react"], function(React) {
   var Releases = React.createFactory(ReleasesClass);
 
   return {
-    products: Products,
-    productsGrid: ProductsGrid,
-    productsTable: ProductsTable,
-    releases: Releases
+    Products: Products,
+    ProductsGrid: ProductsGrid,
+    ProductsTable: ProductsTable,
+    Releases: Releases
   };
 })

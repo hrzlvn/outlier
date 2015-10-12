@@ -185,7 +185,7 @@ define(["d3"], function(d3) {
   };
 
   return {
-    "model": OaiModel,
+    "Model": OaiModel,
     "monthFormatter": monthFormatter,
     "yearFormatter": yearFormatter
   };

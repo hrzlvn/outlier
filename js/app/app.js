@@ -16,7 +16,7 @@ define(function(require, exports, module) {
   var ReactDOM = require("react-dom");
   var enquire = require("enquire");
   var Backbone = require("backbone");
-  var modelmodule = require("app/model");
+  var model = require("app/model");
   var dashboard = require("app/dashboard");
   var products = require("app/products");
   var about = require("es6!app/about");
@@ -36,18 +36,18 @@ define(function(require, exports, module) {
       if (this.props.showAbout) {
         var lastEntry = this.props.model.products[0];
         var lastEntryDate = lastEntry.releaseDate;
-        return about.about({
-          endmonth: modelmodule.monthFormatter(lastEntryDate),
-          endyear: modelmodule.yearFormatter(lastEntryDate)
+        return about.About({
+          endmonth: model.monthFormatter(lastEntryDate),
+          endyear: model.yearFormatter(lastEntryDate)
         });
       } else if (this.props.selectedProductName){
-        return details.details(_.extend({
+        return details.Details(_.extend({
           product: this.props.presenter.compileProduct(this.props.selectedProductName)
         }, this.props));
       } else {
         return React.DOM.div({key:'App'}, [
           dashboard.dashboard(_.extend({key: 'dashboard-container'}, this.props)),
-          products.products(
+          products.Products(
             _.extend({key: 'products-container'}, this.props)
           )
         ]);
@@ -58,7 +58,7 @@ define(function(require, exports, module) {
   var App = React.createFactory(AppClass);
 
   function OaiPresenter() {
-    this.model = new modelmodule.model();
+    this.model = new model.Model();
     this.hasData = false;
 
     var _this = this;

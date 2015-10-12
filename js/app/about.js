@@ -39,4 +39,4 @@ var AboutClass = React.createClass({
 
 var About = React.createFactory(AboutClass);
 
-export default { about: About }
+export default { About: About }
