@@ -11,15 +11,50 @@
   */
 define(["react"], function(React) {
 
-  /**
-   * @function Unpack data from a join
-   */
   function unpack(d) { return d;}
+
+  function urlStringForProductName(name) {
+    return "#product/" + name.replace(/\//g, "%2F")
+  }
 
   function rowLabel(d) {
     if (d.links.length > 0) return "";
     if (d.images.length > 0) return "";
     return d.label;
+  }
+
+  function drawProductTable(productsTable, products, headers, drawLinks, drawImages, columnsDataFunc) {
+    var thead = productsTable.selectAll("thead").data([[headers]]);
+    thead.enter().append("thead");
+    var headerRow = thead.selectAll("tr").data(unpack);
+    headerRow.enter().append("tr");
+    var headerData = headerRow.selectAll("th").data(unpack);
+    headerData.enter().append("th").text(unpack);
+
+    var tbody = productsTable.selectAll("tbody").data([products]);
+    tbody.enter().append("tbody");
+    var tr = tbody.selectAll("tr").data(unpack);
+    tr.enter().append("tr");
+    tr.exit().transition(1000).style("opacity", 0).remove();
+    var td = tr.selectAll("td").data(columnsDataFunc);
+    td.enter().append("td");
+    td.text(rowLabel);
+
+    var links = td.selectAll("a.product")
+      .data(function(d) { return d.links});
+    links.enter().append("a")
+      .attr("class", "product")
+      .attr("href", function(d) { return urlStringForProductName(d.productName) } )
+      .text(function(d) { return d.productName });
+
+    if (drawImages) {
+      var images = td.selectAll("img")
+          .data(function(d) { return d.images});
+        images.enter().append("img")
+          .attr("class", "img-responsive")
+        images
+          .attr("src", function(d) { return d.src });
+    }
   }
 
   var ProductsTableClass = React.createClass({
@@ -36,12 +71,11 @@ define(["react"], function(React) {
       return headers.map(function(d, i) {
         var links = [];
         var images = [];
-        if (i == productColumnIdx && row["InSitu"].length > 0)
-          links = [{label: row[d], link: row["InSitu"]}];
+        // Link the product column to the product page
+        if (i == productColumnIdx)
+          links = [{productName: row[d]}];
         if (i == imageColumnIdx && row["Image"] && row["Image"].length > 0) {
-          link = null;
-          if (row["InSitu"].length > 0) link = row["InSitu"].length;
-          images = [{src: row["Image"], link: link }];
+          images = [{src: row["Image"] }];
         }
         return {label: row[d], links: links, images: images}
       })
@@ -49,36 +83,10 @@ define(["react"], function(React) {
 
     drawProductTable: function(productsTable, products) {
       var headers = this.productTableHeaders();
-      var thead = productsTable.selectAll("thead").data([[headers]]);
-      thead.enter().append("thead");
-      var headerRow = thead.selectAll("tr").data(unpack);
-      headerRow.enter().append("tr");
-      var headerData = headerRow.selectAll("th").data(unpack);
-      headerData.enter().append("th").text(unpack);
-
-      var tbody = productsTable.selectAll("tbody").data([products]);
-      tbody.enter().append("tbody");
-      var tr = tbody.selectAll("tr").data(unpack);
-      tr.enter().append("tr");
-      tr.exit().transition(1000).style("opacity", 0).remove();
       var _this = this;
-      var td = tr.selectAll("td").data(function(row) { return _this.productTableColumns(row, headers)});
-      td.enter().append("td");
-      td.text(rowLabel);
-
-      var links = td.selectAll("a.product")
-        .data(function(d) { return d.links});
-      links.enter().append("a")
-        .attr("class", "product")
-        .attr("href", function(d) { return d.link })
-        .text(function(d) { return d.label });
-
-    var images = td.selectAll("img")
-        .data(function(d) { return d.images});
-      images.enter().append("img")
-        .attr("class", "img-responsive")
-      images
-        .attr("src", function(d) { return d.src })
+      drawProductTable(productsTable, products, headers,
+        true, this.props.showImages,
+        function(row) { return _this.productTableColumns(row, headers)});
     },
 
     isShowLabels: function() { return this.props.showLabels },
@@ -120,11 +128,7 @@ define(["react"], function(React) {
         .enter().append("a")
           .classed("image", true);
       imageContainers
-        .attr("href", function(d) { return "#product/" + d["Product"].replace(/\//g, "%2F")})
-        .on("click", function(d) {
-          d3.event.preventDefault();
-          presenter.clickedProduct("product/" + d["Product"].replace(/\//g, "%2F"))
-        });
+        .attr("href", function(d) { return urlStringForProductName(d["Product"])});
       if (this.isShowLabels()) imageContainers.text(function(d) { return d["Product"]})
       var images = imageContainers.selectAll("img").data(function(d) { return [d["Image"]]});
       images
@@ -184,50 +188,18 @@ define(["react"], function(React) {
     displayName: 'Releases',
 
     productTableHeaders: function() {
-      return ["Image", "Price", "Colors", "Release"];
+      return ["Price", "Colors", "Release"];
     },
 
     productTableColumns: function(row, headers) {
-      var showImages = this.props.showImages;
-      var imageColumnIdx = (showImages) ? 0 : -1;
-      return headers.map(function(d, i) {
-        var links = [];
-        var images = [];
-        if (i == imageColumnIdx && row["Image"] && row["Image"].length > 0) {
-          link = null;
-          if (row["InSitu"].length > 0) link = row["InSitu"].length;
-          images = [{src: row["Image"], link: link }];
-        }
-        return {label: row[d], links: links, images: images}
-      })
+      return headers.map(function(d, i) { return {label: row[d], links: [], images: []} });
     },
 
     drawProductTable: function(productsTable, products) {
       var headers = this.productTableHeaders();
-      var thead = productsTable.selectAll("thead").data([[headers]]);
-      thead.enter().append("thead");
-      var headerRow = thead.selectAll("tr").data(unpack);
-      headerRow.enter().append("tr");
-      var headerData = headerRow.selectAll("th").data(unpack);
-      headerData.enter().append("th").text(unpack);
-
-      var tbody = productsTable.selectAll("tbody").data([products]);
-      tbody.enter().append("tbody");
-      var tr = tbody.selectAll("tr").data(unpack);
-      tr.enter().append("tr");
-      tr.exit().transition(1000).style("opacity", 0).remove();
       var _this = this;
-      var td = tr.selectAll("td").data(function(row) { return _this.productTableColumns(row, headers)});
-      td.enter().append("td");
-      td.text(rowLabel);
-
-    var images = td.selectAll("img")
-        .data(function(d) { return d.images});
-      images.enter().append("img")
-        .attr("height", "100")
-        ;
-      images
-        .attr("src", function(d) { return d.src })
+      drawProductTable(productsTable, products, headers, false, false,
+        function(row) { return _this.productTableColumns(row, headers)});
     },
 
     componentDidMount: function() {
