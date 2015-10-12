@@ -59,6 +59,9 @@ define(["react", "underscore"], function(React, _) {
         .attr("data-toggle", "button")
         .on("click", function(d) { _this.props.presenter.toggleFilter(d); })
         .text(function(d) { return d.type; });
+      toggles
+        .attr("aria-pressed", function(d) { return _this.props.presenter.isFilterOn(d) })
+        .classed("active", function(d) { return _this.props.presenter.isFilterOn(d) });
     },
 
     componentDidMount: function() {

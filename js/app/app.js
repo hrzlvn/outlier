@@ -158,6 +158,10 @@ define(function(require, exports, module) {
     this.update();
   };
 
+  OaiPresenter.prototype.isFilterOn = function(d) {
+    return d.isOn;
+  };
+
   OaiPresenter.prototype.toggleImages = function() {
     this.props.showImages = !this.props.showImages;
     this.props.mode = (this.props.showImages) ? "list" : "table";
