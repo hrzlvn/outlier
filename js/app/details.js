@@ -52,7 +52,10 @@ define(["react", "app/stats", "app/products"], function(React, stats, products) 
       var product = this.props.product;
       var passOnProps = _.omit(this.props, ["products", "showLabels"]);
       passOnProps.products = product.releases;
-      var statsDisplay = [stats.monthStats(_.extend({key: 'monthStats'}, passOnProps))];
+      var statsDisplay = [
+        stats.seasonStats(_.extend({key: 'seasonStats'}, passOnProps)),
+        stats.monthStats(_.extend({key: 'monthStats'}, passOnProps))
+      ];
       var statsGroup = React.DOM.div({key: 'statsGroup', className:'row'}, statsDisplay);
       var statsColumn = React.DOM.div({key: 'statsColumn', className: 'col-xs-6 col-md-6'}, [statsGroup, imagesColumn]);
       var productsGridProps = _.extend(

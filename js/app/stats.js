@@ -175,6 +175,52 @@ define(["react"], function(React) {
   });
   var MonthStats = React.createFactory(MonthStatsClass);
 
+  var SeasonStatsClass = React.createClass({
+
+    displayName: 'SeasonStats',
+
+    drawMonthInfo: function(products, seasonContainer) {
+      function seasonsToConsider(list) {
+        // Maps months to seasons
+        return list
+          .filter(function(d) { return "FALSE" == d["Historic"] && null != d.releaseDate})
+          .map(function(d) { return d.releaseDate.getMonth() })
+          .map(function(d) {
+            if (d < 2)
+              return 0; // Jan, Feb -> Winter
+            if (d < 5)
+              return 1; // Mar, Apr, May -> Spring
+            if (d < 8)
+              return 2; // Jun, Jul, Aug -> Summer
+            if (d < 11)
+              return 3; // Sep, Oct, Nov -> Fall
+            return 0; // Dec -> Winter
+          });
+      }
+      var labels = ["W", "S", "S", "F"]
+      var seasons = seasonsToConsider(products);
+      var bins = [0,1,2,3,4];
+      var hist = d3.layout.histogram().bins(bins)(seasons);
+      drawChart(seasonContainer, this.props, hist, bins, labels);
+    },
+
+    componentDidMount: function() {
+      // Just update the component
+      this.componentDidUpdate();
+    },
+
+    componentDidUpdate: function() {
+      var products = this.props.products;
+
+      this.drawMonthInfo(products, d3.select("#season-container"));
+    },
+
+    render: function() {
+      return statusElementDom("Season", ["season-container"]);
+    }
+  });
+  var SeasonStats = React.createFactory(SeasonStatsClass);
+
   var WeekdayStatsClass = React.createClass({
     displayName: 'WeekdayStats',
     drawWeekdayInfo: function(products, weekdayContainer) {
@@ -228,6 +274,7 @@ define(["react"], function(React) {
     render: function() {
       var stats = [
         PriceStats(_.extend({key: 'priceStats'}, this.props)),
+        SeasonStats(_.extend({key: 'seasonStats'}, this.props)),
         MonthStats(_.extend({key: 'monthStats'}, this.props)),
         WeekdayStats(_.extend({key: 'weekdayStats'}, this.props))
       ];
@@ -241,6 +288,7 @@ define(["react"], function(React) {
 
   return {
     stats: Stats,
+    seasonStats: SeasonStats,
     monthStats: MonthStats
   }
 })
