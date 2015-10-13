@@ -167,7 +167,10 @@ define(["d3"], function(d3) {
     var onAndFilters = this.andFilters.filter(function(d) { return d.isOn });
     if (onAndFilters.length < 1) return;
 
-    var runAndFiltersInOrMode = (onFilters.length < 1);
+    // TODO This needs to done by category -- within a category they are or
+    // between categories they are and
+    //var runAndFiltersInOrMode = (onFilters.length < 1);
+    var runAndFiltersInOrMode = true;
     this.filteredProducts = this.filteredProducts.filter(function(d) {
       var hits = 0;
       onAndFilters.forEach(function(filter) {
