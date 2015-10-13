@@ -350,11 +350,12 @@ define(["d3", "react"], function(d3, React) {
         PriceStats(_.extend({key: 'priceStats'}, this.props)),
         SeasonStats(_.extend({key: 'seasonStats'}, this.props)),
         MonthStats(_.extend({key: 'monthStats'}, this.props)),
-        WeekdayStats(_.extend({key: 'weekdayStats'}, this.props))
+        WeekdayStats(_.extend({key: 'weekdayStats'}, this.props)),
+        FrequencyStats(_.extend({key: 'frequencyStats'}, this.props))
       ];
       var statsGroup = React.DOM.div({key: 'statsGroup', className:'row'}, stats);
       var title = React.DOM.h3({key: 'statsTitle'}, 'Stats');
-      var column = React.DOM.div({key: 'statusCol', className: 'col-xs-6 col-md-6'}, [title, statsGroup]);
+      var column = React.DOM.div({key: 'statusCol', className: 'col-xs-8 col-md-8'}, [title, statsGroup]);
       return column;
     }
   });

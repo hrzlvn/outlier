@@ -98,7 +98,7 @@ define(["d3", "react", "underscore"], function(d3, React, _) {
       var clearGroup = React.DOM.div({key:'clearGroup', style: {paddingBottom: "10px"}}, clearButton);
 
       var title = React.DOM.h3({key:'title'}, 'Filter');
-      var column = React.DOM.div({key:'filtersGroup', className: 'col-xs-6 col-md-6'}, [title, clearGroup, panelGroup]);
+      var column = React.DOM.div({key:'filtersGroup', className: 'col-xs-4 col-md-4'}, [title, clearGroup, panelGroup]);
       return column;
     }
   });
