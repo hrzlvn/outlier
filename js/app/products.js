@@ -9,7 +9,7 @@
  /**
   * Implementation of the products display.
   */
-define(["react"], function(React) {
+define(["d3", "react"], function(d3, React) {
 
   function unpack(d) { return d;}
 

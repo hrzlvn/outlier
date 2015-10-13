@@ -9,7 +9,7 @@
 /**
  * Implementation of the component that handles filtering in the UI.
  */
-define(["react", "underscore"], function(React, _) {
+define(["d3", "react", "underscore"], function(d3, React, _) {
 
   /**
    * @function Unpack data from a join
