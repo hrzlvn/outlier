@@ -56,7 +56,6 @@ define(["d3", "react", "underscore"], function(d3, React, _) {
       toggles.enter()
         .append("button")
         .attr("class", "btn btn-default")
-        .attr("data-toggle", "button")
         .on("click", function(d) { _this.props.presenter.toggleFilter(d); })
         .text(function(d) { return d.type; });
       toggles
