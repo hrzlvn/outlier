@@ -293,7 +293,7 @@ define(["d3", "react"], function(d3, React) {
           if ("TRUE" == d["Historic"]) return false;
           if (null == d.releaseDate) return false;
           return d.releaseDate > cutoffDate; });
-      if (products.length < 2) {
+      if (products.length < 3) {
         drawNotEnoughInfo();
         return;
       }
