@@ -93,6 +93,7 @@ define(["d3", "react", "underscore"], function(d3, React, _) {
       var filters = filterProps.map(function(d) { d.key = d.filterId; _.extend(d, _this.props); return Filter(d) });
       var panelGroup = React.DOM.div({key:'panelGroup', className:'panel-group', id:'filters'}, filters);
       var clearButton = React.DOM.button({
+        onclick: this.clearAllFilters,
         className:'btn btn-xs btn-default', id:'clear-button', type:'button'
       }, 'Clear All');
       var clearGroup = React.DOM.div({key:'clearGroup', style: {paddingBottom: "10px"}}, clearButton);
@@ -100,6 +101,9 @@ define(["d3", "react", "underscore"], function(d3, React, _) {
       var title = React.DOM.h3({key:'title'}, 'Filter');
       var column = React.DOM.div({key:'filtersGroup', className: 'col-xs-4 col-md-4'}, [title, clearGroup, panelGroup]);
       return column;
+    },
+    clearAllFilters: function() {
+      this.props.presenter.clearFilters();
     }
   });
 
