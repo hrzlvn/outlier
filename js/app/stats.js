@@ -280,19 +280,30 @@ define(["d3", "react"], function(d3, React) {
     displayName: 'FrequencyStats',
 
     drawFrequencyInfo: function() {
+
+      function drawNotEnoughInfo() {
+        d3.select("#releases-per-year").text("Not enough data.");
+        d3.select("#avg-gap").text("");
+        d3.select("#avg-dev").text("");
+      }
+
       var cutoffDate = dateParser.parse("2013-01-01");
       var products =
         this.props.products.filter(function(d) {
           if ("TRUE" == d["Historic"]) return false;
           if (null == d.releaseDate) return false;
           return d.releaseDate > cutoffDate; });
+      if (products.length < 2) {
+        drawNotEnoughInfo();
+        return;
+      }
       // These are already sorted
       var last = products[0].releaseDate;
       var productMaxIdx = products.length - 1
       var first = products[productMaxIdx].releaseDate;
       var msInWeekRecip = 1 / (60 * 60 * 24 * 7 * 1000);
       var numWeeks = (last - first) * msInWeekRecip
-      if (numWeeks > 52 && productMaxIdx > 2) {
+      if (numWeeks > 52) {
         var numberFormat = d3.format(".2f");
         // Use the max index in the calculations below because 1 release per year
         // means you would see two releases in 365 days
@@ -313,9 +324,7 @@ define(["d3", "react"], function(d3, React) {
           .attr("style", "font-size: 9pt")
           .text("(+/- " + numberFormat(d3.mean(devs)) + "w" + ")");
       } else {
-        d3.select("#releases-per-year").text("Not enough data.");
-        d3.select("#avg-gap").text("");
-        d3.select("#avg-dev").text("");
+        drawNotEnoughInfo();
       }
     },
 
