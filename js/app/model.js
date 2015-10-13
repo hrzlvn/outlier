@@ -171,12 +171,32 @@ define(["d3"], function(d3) {
     // between categories they are and
     //var runAndFiltersInOrMode = (onFilters.length < 1);
     var runAndFiltersInOrMode = true;
+    var filtersByCategory = {};
+    onAndFilters.forEach(function(f) {
+      if (filtersByCategory[f.category] != null) {
+        filtersByCategory[f.category].push(f);
+      } else {
+        filtersByCategory[f.category] = [f];
+      }
+    });
+    var onCategories = [];
+    for (var key in filtersByCategory) {
+      if (filtersByCategory.hasOwnProperty(key))
+        onCategories.push(key);
+    }
+
     this.filteredProducts = this.filteredProducts.filter(function(d) {
-      var hits = 0;
-      onAndFilters.forEach(function(filter) {
-        if (filter.isHit(d)) ++hits;
+      var hitsPerCategory = 0;
+      onCategories.forEach(function(category) {
+        var filters = filtersByCategory[category];
+        for (var i = 0; i < filters.length; ++i) {
+          if (filters[i].isHit(d)) {
+            ++hitsPerCategory;
+            break;
+          }
+        }
       });
-      return (runAndFiltersInOrMode) ? hits > 0 : hits == onAndFilters.length;
+      return hitsPerCategory == onCategories.length;
     });
 
   };
