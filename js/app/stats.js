@@ -9,11 +9,9 @@
  /**
   * Implementation of the component that displays stats about the selected releases.
   */
-define(["react"], function(React) {
+define(["d3", "react"], function(d3, React) {
 
-  /**
-   * @function Unpack data from a join
-   */
+  var dateParser = d3.time.format("%Y-%m-%d");
   function unpack(d) { return d;}
 
   function drawChart(container, props, hist, bins, labels) {
@@ -88,6 +86,14 @@ define(["react"], function(React) {
     // Key is necessary to keep react from complaining
     var title = React.DOM.h4({key: "title"}, name);
     var statElts = subs.map(function(s) { return React.DOM.span({id: s, key: s}) });
+    statElts.unshift(title);
+    return React.DOM.div({className: 'col-xs-4 col-md-4', style: {width: '110px'}}, statElts);
+  }
+
+  function statusElementDomAsDiv(name, subs) {
+    // Key is necessary to keep react from complaining
+    var title = React.DOM.h4({key: "title"}, name);
+    var statElts = subs.map(function(s) { return React.DOM.div({id: s, key: s}) });
     statElts.unshift(title);
     return React.DOM.div({className: 'col-xs-4 col-md-4', style: {width: '110px'}}, statElts);
   }
@@ -269,6 +275,65 @@ define(["react"], function(React) {
   });
   var WeekdayStats = React.createFactory(WeekdayStatsClass);
 
+  var FrequencyStatsClass = React.createClass({
+
+    displayName: 'FrequencyStats',
+
+    drawFrequencyInfo: function() {
+      var cutoffDate = dateParser.parse("2013-01-01");
+      var products =
+        this.props.products.filter(function(d) {
+          if ("TRUE" == d["Historic"]) return false;
+          if (null == d.releaseDate) return false;
+          return d.releaseDate > cutoffDate; });
+      // These are already sorted
+      var last = products[0].releaseDate;
+      var productMaxIdx = products.length - 1
+      var first = products[productMaxIdx].releaseDate;
+      var msInWeekRecip = 1 / (60 * 60 * 24 * 7 * 1000);
+      var numWeeks = (last - first) * msInWeekRecip
+      if (numWeeks > 52 && productMaxIdx > 2) {
+        var numberFormat = d3.format(".2f");
+        // Use the max index in the calculations below because 1 release per year
+        // means you would see two releases in 365 days
+        d3.select("#releases-per-year")
+          .attr("style", "font-size: 9pt")
+          .text("Per Year: " + numberFormat(productMaxIdx / (numWeeks / 52.0)));
+        var avgGap = numWeeks / productMaxIdx;
+        numberFormat = d3.format(".0f");
+        d3.select("#avg-gap")
+          .attr("style", "font-size: 9pt")
+          .text("Avg Gap: " + numberFormat(avgGap) + "w");
+        var devs = [];
+        products.reduce(function(b, a) {
+          var gap = (b.releaseDate - a.releaseDate) * msInWeekRecip;
+          devs.push(Math.abs(gap - avgGap));
+          return a });
+        d3.select("#avg-dev")
+          .attr("style", "font-size: 9pt")
+          .text("(+/- " + numberFormat(d3.mean(devs)) + "w" + ")");
+      } else {
+        d3.select("#releases-per-year").text("Not enough data.");
+        d3.select("#avg-gap").text("");
+        d3.select("#avg-dev").text("");
+      }
+    },
+
+    componentDidMount: function() {
+      // Just update the component
+      this.componentDidUpdate();
+    },
+
+    componentDidUpdate: function() {
+      this.drawFrequencyInfo();
+    },
+
+    render: function() {
+      return statusElementDomAsDiv("Frequency", ["releases-per-year", "avg-gap", "avg-dev"]);
+    }
+  });
+  var FrequencyStats = React.createFactory(FrequencyStatsClass);
+
   var StatsClass = React.createClass({
     displayName: 'Stats',
     render: function() {
@@ -289,6 +354,7 @@ define(["react"], function(React) {
   return {
     Stats: Stats,
     SeasonStats: SeasonStats,
-    MonthStats: MonthStats
+    MonthStats: MonthStats,
+    FrequencyStats: FrequencyStats
   }
 })

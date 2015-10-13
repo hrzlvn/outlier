@@ -213,7 +213,7 @@ define(["react"], function(React) {
     },
 
     render: function() {
-      var title = React.DOM.h3({key: 'productsTitle'}, "Releases");
+      var title = React.DOM.h3({key: 'productsTitle'}, "Releases (" + this.props.products.length + ")");
       var elts = [title];
       var table = React.DOM.table({key: 'productsTable', id: 'products-table', className: 'table' });
       elts.push(table);

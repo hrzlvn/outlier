@@ -54,7 +54,8 @@ define(["react", "app/stats", "app/products"], function(React, stats, products) 
       passOnProps.products = product.releases;
       var statsDisplay = [
         stats.SeasonStats(_.extend({key: 'seasonStats'}, passOnProps)),
-        stats.MonthStats(_.extend({key: 'monthStats'}, passOnProps))
+        stats.MonthStats(_.extend({key: 'monthStats'}, passOnProps)),
+        stats.FrequencyStats(_.extend({key: 'frequencyStats'}, passOnProps))
       ];
       var statsGroup = React.DOM.div({key: 'statsGroup', className:'row'}, statsDisplay);
       var statsColumn = React.DOM.div({key: 'statsColumn', className: 'col-xs-6 col-md-6'}, [statsGroup, imagesColumn]);
