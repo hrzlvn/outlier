@@ -14,8 +14,7 @@ define(["react", "app/stats", "app/products"], function(React, stats, products) 
   var DetailsHeaderClass = React.createClass({
     displayName: 'DetailsHeader',
     render: function() {
-      var title = React.DOM.h3({key: 'title'}, null, this.props.product["Product"]);
-      var outlierLink = React.DOM.a({key: 'outlierLink', href: this.props.product["InSitu"]}, "Outlier");
+      var title = React.DOM.h3({key: 'title'}, [React.DOM.a({key: 'outlierLink', href: this.props.product["InSitu"]}, this.props.product["Product"])]);
       var googleUrl = "https://google.com/search?q=" + encodeURI(this.props.product["Product"]);
       var googleLink = React.DOM.a({key: 'googleLink', href: googleUrl }, "Google");
       var product = this.props.product;
@@ -26,7 +25,7 @@ define(["react", "app/stats", "app/products"], function(React, stats, products) 
       var price = React.DOM.p({key: "price"}, null, priceString);
       var column = React.DOM.div(
         {key:'headerGroup', className: 'col-xs-6 col-md-6'},
-        [title, outlierLink, " / ", googleLink, price]);
+        [title, googleLink, price]);
       return React.DOM.div({className: 'row'}, [ column ]);
     }
   });
