@@ -23,6 +23,20 @@ define(["d3", "react"], function(d3, React) {
     return d.label;
   }
 
+  function groupBy(products, size) {
+    var groups = [[]];
+    products.reduce(function(gps, elt) {
+      var group = gps[gps.length - 1];
+      if (group.length == size) {
+        group = [];
+        gps.push(group);
+      }
+      group.push(elt);
+      return gps;
+    }, groups);
+    return groups;
+  }
+
   function drawProductTable(productsTable, products, headers, drawLinks, drawImages, columnsDataFunc) {
     var thead = productsTable.selectAll("thead").data([[headers]]);
     thead.enter().append("thead");
@@ -111,10 +125,20 @@ define(["d3", "react"], function(d3, React) {
   var ProductsGridClass = React.createClass({
     displayName: 'ProductsGrid',
 
-    drawProductList: function(productsList, products) {
+    drawProductList: function(container, products) {
       // Split the products into groups depending on the size of the screen
       // Check props.images_per_col
-      var list = productsList.selectAll("li").data(products);
+      // Break the products into groups of 12
+
+      var groups = groupBy(products, 12);
+      var productsList = container.selectAll("ul").data(groups);
+      productsList
+          .enter()
+        .append("ul")
+          .classed("row", true)
+          .style("padding", "0 0 0 0")
+          .style("margin", "0 0 0 0");
+      var list = productsList.selectAll("li").data(unpack);
       var presenter = this.props.presenter;
       list
         .enter().append("li")
@@ -149,14 +173,11 @@ define(["d3", "react"], function(d3, React) {
 
     componentDidUpdate: function() {
       var products = this.props.products;
-      this.drawProductList(d3.select("#products-list"), products);
+      this.drawProductList(d3.select("#products-container"), products);
     },
 
     render: function() {
-      return React.DOM.ul({
-        id: 'products-list', className: 'row',
-        style: { padding: "0 0 0 0", margin: "0 0 0 0" }
-      });
+      return React.DOM.div({id: 'products-container'});
     }
   });
   var ProductsGrid = React.createFactory(ProductsGridClass);
