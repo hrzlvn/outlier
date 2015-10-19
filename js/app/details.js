@@ -14,7 +14,13 @@ define(["react", "app/stats", "app/products"], function(React, stats, products) 
   var DetailsHeaderClass = React.createClass({
     displayName: 'DetailsHeader',
     render: function() {
-      var title = React.DOM.h3({key: 'title'}, [React.DOM.a({key: 'outlierLink', href: this.props.product["InSitu"]}, this.props.product["Product"] + " [outlier.cc]")]);
+      var outlierUrl = $.trim(this.props.product["InSitu"]);
+      var title;
+      if (outlierUrl.length > 0) {
+        title = React.DOM.h3({key: 'title'}, [React.DOM.a({key: 'outlierLink', href: outlierUrl}, this.props.product["Product"] + " [outlier.cc]")]);
+      } else {
+        title = React.DOM.h3({key: 'title'}, null, this.props.product["Product"]);
+      }
       var googleUrl = "https://google.com/search?q=" + encodeURI(this.props.product["Product"]);
       var googleLink = React.DOM.a({key: 'googleLink', href: googleUrl }, "Google");
       var product = this.props.product;

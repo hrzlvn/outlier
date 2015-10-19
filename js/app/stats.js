@@ -283,12 +283,16 @@ define(["d3", "react"], function(d3, React) {
     drawFrequencyInfo: function() {
 
       function drawNotEnoughInfo() {
-        d3.select("#releases-per-year").text("Not enough data.");
+        d3.select("#releases-per-year").style("font-size", "9pt").text("Not enough data.");
         d3.select("#avg-gap").text("");
         d3.select("#avg-dev").text("");
-        d3.select("#last-release")
-          .attr("style", "font-size: 9pt")
-          .text("Last: " + dateFormat(products[0].releaseDate));
+        if (products.length > 0) {
+          d3.select("#last-release")
+            .style("font-size", "9pt")
+            .text("Last: " + dateFormat(products[0].releaseDate));
+        } else {
+          d3.select("#last-release").text("");
+        }
       }
 
       var cutoffDate = dateFormat.parse("2013-01-01");
@@ -320,12 +324,12 @@ define(["d3", "react"], function(d3, React) {
         // Use the max index in the calculations below because 1 release per year
         // means you would see two releases in 365 days
         d3.select("#releases-per-year")
-          .attr("style", "font-size: 9pt")
+          .style("font-size", "9pt")
           .text("Per Year: " + numberFormat(productMaxIdx / (numWeeks / 52.0)));
         var avgGap = numWeeks / productMaxIdx;
         numberFormat = d3.format(".1f");
         d3.select("#avg-gap")
-          .attr("style", "font-size: 9pt")
+          .style("font-size", "9pt")
           .text("Avg Gap: " + numberFormat(avgGap) + "w");
         var devs = [];
         products.reduce(function(b, a) {
@@ -333,10 +337,10 @@ define(["d3", "react"], function(d3, React) {
           devs.push(Math.abs(gap - avgGap));
           return a });
         d3.select("#avg-dev")
-          .attr("style", "font-size: 9pt")
+          .style("font-size", "9pt")
           .text("(+/- " + numberFormat(d3.mean(devs)) + "w" + ")");
           d3.select("#last-release")
-            .attr("style", "font-size: 9pt")
+            .style("font-size", "9pt")
             .text("Last: " + dateFormat(products[0].releaseDate));
       } else {
         drawNotEnoughInfo();
