@@ -14,7 +14,7 @@ define(["react", "app/stats", "app/products"], function(React, stats, products) 
   var DetailsHeaderClass = React.createClass({
     displayName: 'DetailsHeader',
     render: function() {
-      var title = React.DOM.h3({key: 'title'}, [React.DOM.a({key: 'outlierLink', href: this.props.product["InSitu"]}, this.props.product["Product"])]);
+      var title = React.DOM.h3({key: 'title'}, [React.DOM.a({key: 'outlierLink', href: this.props.product["InSitu"]}, this.props.product["Product"] + " [outlier.cc]")]);
       var googleUrl = "https://google.com/search?q=" + encodeURI(this.props.product["Product"]);
       var googleLink = React.DOM.a({key: 'googleLink', href: googleUrl }, "Google");
       var product = this.props.product;
@@ -69,7 +69,7 @@ define(["react", "app/stats", "app/products"], function(React, stats, products) 
           products.ProductsGrid(productsGridProps)
         ]
       );
-      return React.DOM.div({className: 'row'}, [ statsColumn, imagesColumn ]);
+      return React.DOM.div({className: 'row'}, [ imagesColumn, statsColumn ]);
     }
   });
   var DetailsStats = React.createFactory(DetailsStatsClass);
