@@ -74,8 +74,8 @@ define(function(require, exports, module) {
     this.props.chartWidth = 100 - margin.left - margin.right;
     this.props.chartHeight = 100 - margin.top - margin.bottom;
     this.props.showAbout = false;
-    this.props.mode =  "grid";
-    this.props.showImages = true;
+    this.props.mode =  "table";
+    this.props.showImages = false;
     this.props.showLabels = true;
   }
 
@@ -168,6 +168,13 @@ define(function(require, exports, module) {
     this.update();
   };
 
+  OaiPresenter.prototype.onLargeScreen = function() {
+    // We have already initialized
+    if (this.hasData) return;
+    this.props.showImages = true;
+    this.props.mode = "list";
+  };
+
   var presenter = new OaiPresenter();
   Backbone.history.start({root: "/outlier/"});
 
@@ -175,10 +182,10 @@ define(function(require, exports, module) {
     $('#images-control').click(function(event) {
       presenter.toggleImages();
     });
-    // Use this to configure the grid
-    // enquire
-    //   .register("(min-width: 768px)", {match: function() { console.log("sm")}})
-    //   .register("(min-width: 992px)", {match: function() { console.log("md")}});
+    enquire
+      .register("(min-width: 768px)",
+        { setup: function() { presenter.onLargeScreen() },
+          deferSetup: true});
     presenter.loadData(function(rows) { presenter.initialDraw(); });
   }
 
