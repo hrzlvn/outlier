@@ -69,7 +69,7 @@ define(["d3", "react"], function(d3, React) {
       .attr("class", "graphlabel")
       .attr("transform", textTransform);
 
-  //  CHART FILTERING
+  //  TODO CHART FILTERING
   //    .on("click", function(d, i) { console.log(hist); });
 
     var text = textg.selectAll("text")
