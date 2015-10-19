@@ -11,8 +11,9 @@
   */
 define(["d3", "react"], function(d3, React) {
 
-  var dateParser = d3.time.format("%Y-%m-%d");
+  var dateFormat = d3.time.format("%Y-%m-%d");
   function unpack(d) { return d;}
+  var msInWeekRecip = 1 / (60 * 60 * 24 * 7 * 1000);
 
   function drawChart(container, props, hist, bins, labels) {
 
@@ -87,7 +88,7 @@ define(["d3", "react"], function(d3, React) {
     var title = React.DOM.h4({key: "title"}, name);
     var statElts = subs.map(function(s) { return React.DOM.span({id: s, key: s}) });
     statElts.unshift(title);
-    return React.DOM.div({className: 'col-xs-4 col-md-4', style: {width: '110px'}}, statElts);
+    return React.DOM.div({className: 'col-xs-2 col-md-2', style: {width: '110px'}}, statElts);
   }
 
   function statusElementDomAsDiv(name, subs) {
@@ -285,14 +286,26 @@ define(["d3", "react"], function(d3, React) {
         d3.select("#releases-per-year").text("Not enough data.");
         d3.select("#avg-gap").text("");
         d3.select("#avg-dev").text("");
+        d3.select("#last-release")
+          .attr("style", "font-size: 9pt")
+          .text("Last: " + dateFormat(products[0].releaseDate));
       }
 
-      var cutoffDate = dateParser.parse("2013-01-01");
+      var cutoffDate = dateFormat.parse("2013-01-01");
       var products =
-        this.props.products.filter(function(d) {
+        this.props.products.filter(function(d, i, a) {
           if ("TRUE" == d["Historic"]) return false;
           if (null == d.releaseDate) return false;
-          return d.releaseDate > cutoffDate; });
+          if (i > 0) {
+            // Ignore situations where the same product is re-released within two weeks.
+            var n = a[i - 1]
+            if (  (n["Product"] == d["Product"]) &&
+                  ((n.releaseDate - d.releaseDate) * msInWeekRecip < 2)) {
+              return false;
+            }
+          }
+          return d.releaseDate > cutoffDate;
+      });
       if (products.length < 3) {
         drawNotEnoughInfo();
         return;
@@ -301,7 +314,6 @@ define(["d3", "react"], function(d3, React) {
       var last = products[0].releaseDate;
       var productMaxIdx = products.length - 1
       var first = products[productMaxIdx].releaseDate;
-      var msInWeekRecip = 1 / (60 * 60 * 24 * 7 * 1000);
       var numWeeks = (last - first) * msInWeekRecip
       if (numWeeks > 52) {
         var numberFormat = d3.format(".2f");
@@ -311,7 +323,7 @@ define(["d3", "react"], function(d3, React) {
           .attr("style", "font-size: 9pt")
           .text("Per Year: " + numberFormat(productMaxIdx / (numWeeks / 52.0)));
         var avgGap = numWeeks / productMaxIdx;
-        numberFormat = d3.format(".0f");
+        numberFormat = d3.format(".1f");
         d3.select("#avg-gap")
           .attr("style", "font-size: 9pt")
           .text("Avg Gap: " + numberFormat(avgGap) + "w");
@@ -323,6 +335,9 @@ define(["d3", "react"], function(d3, React) {
         d3.select("#avg-dev")
           .attr("style", "font-size: 9pt")
           .text("(+/- " + numberFormat(d3.mean(devs)) + "w" + ")");
+          d3.select("#last-release")
+            .attr("style", "font-size: 9pt")
+            .text("Last: " + dateFormat(products[0].releaseDate));
       } else {
         drawNotEnoughInfo();
       }
@@ -338,7 +353,7 @@ define(["d3", "react"], function(d3, React) {
     },
 
     render: function() {
-      return statusElementDomAsDiv("Frequency", ["releases-per-year", "avg-gap", "avg-dev"]);
+      return statusElementDomAsDiv("Frequency", ["releases-per-year", "avg-gap", "avg-dev", "last-release"]);
     }
   });
   var FrequencyStats = React.createFactory(FrequencyStatsClass);
